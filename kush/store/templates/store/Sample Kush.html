@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kush Women's Fashion Store</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Swiper CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a2d9d6f7a1.js" crossorigin="anonymous"></script>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="preloader-k">K</div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="nav-wrap container">
+      <div class="brand d-flex align-items-center gap-3">
+        <img src="Logo.png" alt="Kush logo" class="brand-logo">
+        <div>
+          <div class="brand-title">Kush Women's Fashion Store</div>
+          <small class="brand-sub">Officially Kush</small>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#home" class="nav-link">Home</a></li>
+          <li><a href="#about" class="nav-link">About Us</a></li>
+          <li><a href="#order" class="nav-link">Order</a></li>
+          <li><a href="#contact" class="nav-link">Contact Us</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-controls d-flex align-items-center gap-2">
+        <!-- SEARCH -->
+        <div class="nav-search">
+          <input id="siteSearch" class="form-control" type="search" placeholder="Search collections, models..." aria-label="Search">
+          <button id="searchBtn" class="search-btn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <!-- Social icons -->
+        <div class="social-inline d-none d-md-flex">
+          <a href="https://instagram.com/officiallykush" class="social-icon" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://facebook.com/officiallykush" class="social-icon" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          <a href="https://twitter.com/officiallykush" class="social-icon" target="_blank" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <span class="toggle-circle"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="home" class="hero" aria-label="Kush Landing">
+      <div class="hero-bg" role="img" aria-hidden="true"></div>
+      <div class="hero-overlay"></div>
+      <div class="container hero-inner text-center" data-aos="fade-up">
+        <img src="Logo.png" alt="Kush logo" class="hero-logo">
+        <h1>Kush Women's Fashion Store</h1>
+        <p class="lead">We’re here to make sure you always look different, bold, and unforgettable. <strong>Be bold. Be rare. Be you.</strong></p>
+        <div class="mt-3 d-flex justify-content-center gap-2">
+          <a class="btn btn-primary btn-cta" href="#order">Shop Collections <i class="fa-solid fa-bag-shopping ms-2"></i></a>
+          <a class="btn btn-outline btn-cta" href="#contact">Contact Us <i class="fa-solid fa-phone ms-2"></i></a>
+        </div>
+      </div>
+        <!-- Collections grid (generated from DB) -->
+        <div class="row g-4" id="collectionsWrap">
+          {% load static %}
+          {% for category in categories %}
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="{{ category.name }}" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:50 }}">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">{{ category.name }}</h3>
+                  <p class="text-muted small mb-0">{{ category.description }}</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="#">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-{{ forloop.counter }}">
+                <div class="swiper-wrapper">
+                  {% for cloth in category.items %}
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="{% if cloth.image_front %}{{ cloth.image_front.url }}{% else %}{% static 'store/Sample.png' %}{% endif %}" alt="{{ cloth.name }}" loading="lazy">
+                      <div class="availability badge {% if cloth.status == 'available' %}available{% else %}sold{% endif %}">{% if cloth.get_status_display %}{{ cloth.get_status_display }}{% else %}{{ cloth.status }}{% endif %}</div>
+                      <div class="likes-panel">
+                        <form method="post" action="{% url 'like_cloth' cloth.id %}" style="display:inline">{% csrf_token %}<button class="btn-like" type="submit"><i class="fa-regular fa-heart"></i> <span class="count">{{ cloth.likes }}</span></button></form>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>{{ cloth.name }}</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <a class="btn btn-floating btn-wh order-wh" href="{% url 'cloth_detail' cloth.id %}" title="Details"><i class="fa-solid fa-eye"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  {% empty %}
+                  <div class="swiper-slide"><div class="p-3">No items in this category.</div></div>
+                  {% endfor %}
+                </div>
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+                  <p class="text-muted small mb-0">Modern outfits for every occasion.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/complete-activewear.html">More</a>
+                </div>
+              </div>
+
+              <!-- image carousel (5 slides) -->
+              <div class="swiper mySwiper-complete-activewear">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides using Sample.png for prototyping -->
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="Sample.png" alt="Model 1" loading="lazy">
+                      <div class="availability badge available">Available</div>
+                      <div class="likes-panel">
+                        <button class="btn-like" data-model="complete-1" title="Like"><i class="fa-regular fa-heart"></i> <span class="count">12</span></button>
+                        <button class="btn-dislike" data-model="complete-1" title="Dislike"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>Model 1</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <button class="btn btn-floating btn-wh order-wh" title="Order on WhatsApp" data-category="COMPLETE ACTIVEWEAR" data-model="Model 1"><i class="fa-brands fa-whatsapp"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="KEVINE COMPLETE ACTIVEWEAR (11).png" alt="Model 2" loading="lazy">
+                      <div class="availability badge sold">Sold</div>
+                      <div class="likes-panel">
+                        <button class="btn-like" data-model="complete-2" title="Like"><i class="fa-regular fa-heart"></i> <span class="count">3</span></button>
+                        <button class="btn-dislike" data-model="complete-2" title="Dislike"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>Model 2</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <button class="btn btn-floating btn-wh order-wh" title="Order on WhatsApp" data-category="COMPLETE ACTIVEWEAR" data-model="Model 2"><i class="fa-brands fa-whatsapp"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="KEVINE COMPLETE ACTIVEWEAR (9).png" alt="Model 3" loading="lazy">
+                      <div class="availability badge available">Available</div>
+                      <div class="likes-panel">
+                        <button class="btn-like" data-model="complete-3" title="Like"><i class="fa-regular fa-heart"></i> <span class="count">7</span></button>
+                        <button class="btn-dislike" data-model="complete-3" title="Dislike"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>Model 3</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <button class="btn btn-floating btn-wh order-wh" title="Order on WhatsApp" data-category="COMPLETE ACTIVEWEAR" data-model="Model 3"><i class="fa-brands fa-whatsapp"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="KEVINE COMPLETE ACTIVEWEAR (6).png" alt="Model 4" loading="lazy">
+                      <div class="availability badge available">Available</div>
+                      <div class="likes-panel">
+                        <button class="btn-like" data-model="complete-4" title="Like"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button>
+                        <button class="btn-dislike" data-model="complete-4" title="Dislike"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>Model 4</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <button class="btn btn-floating btn-wh order-wh" title="Order on WhatsApp" data-category="COMPLETE ACTIVEWEAR" data-model="Model 4"><i class="fa-brands fa-whatsapp"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="swiper-slide">
+                    <div class="model-card rounded overflow-hidden position-relative">
+                      <img src="KEVINE COMPLETE ACTIVEWEAR (18).png" alt="Model 5" loading="lazy">
+                      <div class="availability badge available">Available</div>
+                      <div class="likes-panel">
+                        <button class="btn-like" data-model="complete-5" title="Like"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button>
+                        <button class="btn-dislike" data-model="complete-5" title="Dislike"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button>
+                      </div>
+                    </div>
+                    <div class="p-2 text-center">
+                      <strong>Model 5</strong>
+                      <div class="mt-2 d-flex justify-content-center gap-2 align-items-center">
+                        <button class="btn btn-floating btn-wh order-wh" title="Order on WhatsApp" data-category="COMPLETE ACTIVEWEAR" data-model="Model 5"><i class="fa-brands fa-whatsapp"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- navigation arrows and pagination -->
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+              
+
+            </div>
+          </div>
+
+          <!-- You can copy the above block for other categories: CORSET, JACKETS, JEANS, etc.
+               For brevity here I add one more example (CORSET) with 5 slides and similar structure. -->
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">CORSET</h3>
+                  <p class="text-muted small mb-0">Stylish and elegant fashion choices.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="CORSET.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Corset 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE CORSET (1).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Corset 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE CORSET (2).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Corset 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE CORSET (6).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Corset 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE CORSET (4).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Corset 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">JACKETS</h3>
+                  <p class="text-muted small mb-0">Keep warm with style and comfort.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="JACKETS.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jacket 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JACKETS (2).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jacket 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JACKETS (3).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Jacket 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JACKETS (4).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jacket 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JACKETS (1).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jacket 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">JEANS</h3>
+                  <p class="text-muted small mb-0">Classic denim for everyday wear.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="JEANS.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jeans 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JEANS (3).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jeans 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JEANS (5).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Jeans 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JEANS (1).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jeans 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE JEANS (2).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jeans 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">SHORTS </h3>
+                  <p class="text-muted small mb-0"> Casual and cool for sunny days.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="SHORTS.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Short 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SHORTS (4).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Short 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SHORTS (5).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Short 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SHORTS (1).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Short 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SHORTS (2).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Short 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">JUMPSUIT LONG</h3>
+                  <p class="text-muted small mb-0">Sleek and trendy full-length sets.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="JUMPSUIT LONG.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Long 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT LONG (2).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Long 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT LONG (3).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Long 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT LONG (4).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Long 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT LONG (1)   .png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Long 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">SKIRTS </h3>
+                  <p class="text-muted small mb-0">Flirty and feminine essentials.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="SKIRTS.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Skirt 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SKIRTS (2).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Skirt 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SKIRTS (3).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Skirt 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="KEVINE SKIRTS (4).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Skirt 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="SKIRTS.png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Skirt 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">TOP </h3>
+                  <p class="text-muted small mb-0">Chic tops to match every look.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="TOP.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Top 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="TOP (2).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Top 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="TOP (1).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Top 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="TOP (4).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Top 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="TOP (5).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Top 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">JUMPSUIT SHORT </h3>
+                  <p class="text-muted small mb-0">Trendy and playful sets.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="JUMSUIT SHORT.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Short 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT SHORTS (1).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Short 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT SHORTS (2).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Short 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA JUMPSUIT SHORTS (3).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Short 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="MIMI JUMPSUIT SHORT (1).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Jumsuit Short 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">COMPLETE SHORTS</h3>
+                  <p class="text-muted small mb-0"> Comfortable outfits, full set.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="COMPLETE SHORT.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Complete Short 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="MIMI COMPLETE SHORTS (1).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Complete Short 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="MIMI COMPLETE SHORTS (3).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Complete Short 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="MIMI COMPLETE SHORTS (4).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Complete Short 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="MIMI COMPLETE SHORTS (2).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Complete Short 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6 col-lg-4 collection-card" data-category="CORSET" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card-cat p-3 rounded shadow-sm h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h3 class="collection-title">DRESSES </h3>
+                  <p class="text-muted small mb-0">Elegant styles for every occasion.</p>
+                </div>
+                <div class="collection-controls text-end">
+                  <a class="more-btn btn btn-sm btn-outline-secondary" href="catalog/corset.html">More</a>
+                </div>
+              </div>
+
+              <div class="swiper mySwiper-corset">
+                <div class="swiper-wrapper">
+                  <!-- 5 slides -->
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="DRESSES.png" alt="Corset 1" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-1"><i class="fa-regular fa-heart"></i> <span class="count">5</span></button><button class="btn-dislike" data-model="corset-1"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Dress 1</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 1"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA DRESSES (7).png" alt="Corset 2" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-2"><i class="fa-regular fa-heart"></i> <span class="count">2</span></button><button class="btn-dislike" data-model="corset-2"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Dress 2</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 2"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA DRESSES (8).png" alt="Corset 3" loading="lazy"><div class="availability badge sold">Sold</div><div class="likes-panel"><button class="btn-like" data-model="corset-3"><i class="fa-regular fa-heart"></i> <span class="count">8</span></button><button class="btn-dislike" data-model="corset-3"><i class="fa-regular fa-thumbs-down"></i> <span class="count">1</span></button></div></div><div class="p-2 text-center"><strong>Dress 3</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 3"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA DRESSES (9).png" alt="Corset 4" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-4"><i class="fa-regular fa-heart"></i> <span class="count">0</span></button><button class="btn-dislike" data-model="corset-4"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Dress 4</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 4"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                  <div class="swiper-slide"><div class="model-card rounded overflow-hidden position-relative"><img src="THELMA DRESSES (21).png" alt="Corset 5" loading="lazy"><div class="availability badge available">Available</div><div class="likes-panel"><button class="btn-like" data-model="corset-5"><i class="fa-regular fa-heart"></i> <span class="count">1</span></button><button class="btn-dislike" data-model="corset-5"><i class="fa-regular fa-thumbs-down"></i> <span class="count">0</span></button></div></div><div class="p-2 text-center"><strong>Dress 5</strong><div class="mt-2 d-flex justify-content-center"><button class="btn btn-floating btn-wh order-wh" data-category="CORSET" data-model="Corset 5"><i class="fa-brands fa-whatsapp"></i></button></div></div></div>
+                </div>
+
+                <div class="swiper-button-prev custom-nav"><i class="fa-solid fa-chevron-left"></i></div>
+                <div class="swiper-button-next custom-nav"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="swiper-pagination"></div>
+              </div>
+
+            
+            </div>
+          </div>
+
+          <!-- Add additional categories here following the structure above (JACKETS, JEANS, etc.) -->
+        </div>
+
+        <!-- Reviews dashboard under collections -->
+        <div class="reviews-dashboard mt-5" data-aos="fade-up">
+          <div class="card p-3 shadow-sm">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="big-rating">
+                  <div class="rating-number">4.5</div>
+                  <div class="rating-stars">★★★★☆</div>
+                  <div class="rating-count text-muted small">Based on 52 reviews</div>
+                </div>
+                <div class="rating-breakdown">
+                  <div class="small d-flex align-items-center"><span class="me-2 small">5★</span><div class="progress w-100"><div class="progress-bar" style="width:70%"></div></div></div>
+                  <div class="small d-flex align-items-center mt-1"><span class="me-2 small">4★</span><div class="progress w-100"><div class="progress-bar" style="width:15%"></div></div></div>
+                  <div class="small d-flex align-items-center mt-1"><span class="me-2 small">3★</span><div class="progress w-100"><div class="progress-bar" style="width:8%"></div></div></div>
+                </div>
+              </div>
+
+              <div class="submit-review text-end">
+                <button id="leaveReviewBtn" class="btn btn-outline-primary">Leave a review</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section py-5 bg-light">
+      <div class="container" data-aos="fade-left">
+        <h2>Contact Us</h2>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="contact-card p-4 rounded text-white" style="background:linear-gradient(180deg,#072146,#03142a);">
+              <h4>Reach out</h4>
+              <p>Location: 1st Floor Unify House<br>Downtown Mumujyi<br>Kigali, Rwanda</p>
+              <p>Email: <a href="mailto:hello@kushstore.example" class="link-light">hello@kushstore.example</a></p>
+              <p>Phone / WhatsApp: <strong>+250782021235</strong> / <strong>+250785440056</strong></p>
+
+              <div class="contact-social mt-3">
+                <a class="social-icon large" href="https://instagram.com/officiallykush" target="_blank" aria-label="Instagram" color="white"><i class="fa-brands fa-instagram"></i></a>
+                <a class="social-icon large" href="https://facebook.com/officiallykush" target="_blank" aria-label="Facebook" color="white"><i class="fa-brands fa-facebook"></i></a>
+                <a class="social-icon large" href="https://twitter.com/officiallykush" target="_blank" aria-label="Twitter" color="white"><i class="fa-brands fa-x-twitter"></i></a>
+                <a class="social-icon large" href="https://wa.me/250782021235" target="_blank" aria-label="WhatsApp" color="white"><i class="fa-brands fa-whatsapp"></i></a>
+              </div>
+
+              <p class="mt-4 small text-muted" style="color: white;">Opening hours: Mon - Sat, 9:00 AM - 6:00 PM</p>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="contact-card p-4 rounded bg-white">
+              <h4>Send us a message</h4>
+              <form id="contactForm" novalidate>
+                <div class="mb-2"><input class="form-control" type="text" id="cname" placeholder="Your name" required></div>
+                <div class="mb-2"><input class="form-control" type="email" id="cemail" placeholder="Your email" required></div>
+                <div class="mb-2"><input class="form-control" type="tel" id="cphone" placeholder="Phone number (e.g. +25078...)" required></div>
+                <div class="mb-2"><textarea class="form-control" id="cmessage" rows="5" placeholder="How can we help?" required></textarea></div>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">Send message</button>
+                  <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section py-5">
+      <div class="container" data-aos="fade-up">
+        <h2>Frequently Asked Questions</h2>
+        <div class="accordion mt-3" id="faqAcc">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faqOne">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">How do I place an order?</button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAcc">
+              <div class="accordion-body">Choose a category, pick the model you like and click the WhatsApp icon. WhatsApp will open with a prefilled message.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faqTwo">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">What payment methods do you accept?</button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+              <div class="accordion-body">We accept mobile money, bank transfers, and cash on delivery depending on your area. Confirm via WhatsApp before payment.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer py-3">
+    <div class="container d-flex justify-content-between align-items-center flex-column flex-md-row gap-2">
+      <div class="text-white">&copy; 2025 Kush Women's Fashion Store — All rights reserved.</div>
+      <div class="footer-social">
+        <!-- white social icons + username -->
+        <a class="social-icon" href="https://instagram.com/officiallykush" target="_blank" aria-label="Instagram" style="color: white;"><i class="fa-brands fa-instagram"></i> <span class="social-username d-none d-md-inline">instagram</span></a>
+        <a class="social-icon" href="https://facebook.com/officiallykush" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i> <span class="social-username d-none d-md-inline">faceboook</span></a>
+        <a class="social-icon" href="https://twitter.com/officiallykush" target="_blank" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i> <span class="social-username d-none d-md-inline">x</span></a>
+        <a class="social-icon" href="https://wa.me/250782021235" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i> <span class="social-username d-none d-md-inline">WhatsApp</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Order modal (choose number) -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded">
+        <div class="modal-header">
+          <h5 class="modal-title">Place Order</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p id="orderSummary" class="small">Preparing message...</p>
+          <div class="d-flex gap-2">
+                        <a id="wh-btn-2" class="wh-btn wh-secondary btn w-100" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp me-2"></i> WhatsApp +250785440056</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
