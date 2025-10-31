@@ -9,21 +9,21 @@
 
 - Create and activate a venv:
 
-    python -m venv .venv
-    .venv\Scripts\activate
+  python -m venv .venv
+  .venv\Scripts\activate
 
 - Install dependencies (project has no `requirements.txt`; check with the user or infer from environment):
 
-    pip install -r requirements.txt  # if provided
+  pip install -r requirements.txt # if provided
 
 - Apply DB migrations and run server:
 
-    python manage.py migrate
-    python manage.py runserver 127.0.0.1:8000
+  python manage.py migrate
+  python manage.py runserver 127.0.0.1:8000
 
 - Run tests (no tests currently present in `store/tests.py`):
 
-    python manage.py test
+  python manage.py test
 
 ## Architecture & conventions (what to know)
 
@@ -59,12 +59,14 @@
 
 - Example view & route (already present):
 
-    # store/views.py
-    def landing_page(request):
-        return render(request, 'store/landing.html')
+  # store/views.py
 
-    # store/urls.py
-    urlpatterns = [ path('', views.landing_page, name='landing'), ]
+  def landing_page(request):
+  return render(request, 'store/landing.html')
+
+  # store/urls.py
+
+  urlpatterns = [ path('', views.landing_page, name='landing'), ]
 
 ## If you need more context
 
@@ -72,4 +74,5 @@
 - If you are asked to enable static asset serving or add `collectstatic`, propose and document `STATIC_ROOT` changes and CDN/hosting strategy before applying them.
 
 ---
+
 If anything here is incomplete or you want me to include additional examples (migrations, admin, or CI commands), tell me which area to expand and I will iterate.

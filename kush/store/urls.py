@@ -2,15 +2,19 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.landing_page, name='landing'),
+    path('', views.landing_page, name='landing_page'),
+    path('about/', views.about, name='about'),
+    
+    # Category detail page
+    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
 
     # Public cloth views
-    path('clothes/', views.cloth_list, name='cloth_list'),
-    path('clothes/<int:cloth_id>/', views.cloth_detail, name='cloth_detail'),
+    path('manager/clothes/', views.cloth_list, name='cloth_list'),
+    path('manager/clothes/<int:cloth_id>/', views.cloth_detail, name='cloth_detail'),
 
     # Manager actions (staff only)
-    path('clothes/add/', views.add_cloth, name='add_cloth'),
-    path('clothes/<int:cloth_id>/edit/', views.edit_cloth, name='edit_cloth'),
+    path('manager/clothes/add/', views.add_cloth, name='add_cloth'),
+    path('manager/clothes/<int:cloth_id>/edit/', views.edit_cloth, name='edit_cloth'),
 
     # Like endpoint
     path('clothes/<int:cloth_id>/like/', views.like_cloth, name='like_cloth'),

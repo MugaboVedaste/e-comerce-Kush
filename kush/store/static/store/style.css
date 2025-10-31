@@ -1,0 +1,309 @@
+:root{
+  --black:#0b1220;
+  --white:#ffffff;
+  --muted:rgba(11,18,32,0.06);
+  --accent:#0a58ca;
+  --max-width:1200px;
+  --glass: rgba(255,255,255,0.06);
+  --accent-2: #25D366; /* whatsapp green */
+}
+
+/* Reset & base */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin:0;
+  background:var(--white);
+  color:var(--black);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  /* Fixed background image for entire body */
+  background-image: url('images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* PRELOADER */
+.preloader{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:var(--white)}
+.preloader-inner{width:110px;height:110px;border-radius:999px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(2,6,23,0.08)}
+.preloader-k{font-weight:900;font-size:48px;letter-spacing:2px;display:inline-block;animation:preloader-rot 1.6s linear infinite;transform-origin:center}
+@keyframes preloader-rot{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* Header */
+.site-header{position:fixed;left:0;right:0;top:0;z-index:110;background:linear-gradient(180deg, rgba(7,33,70,0.92), rgba(2,6,23,0.6));color:var(--white);backdrop-filter:blur(6px);padding:10px 0}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:var(--max-width);margin:0 auto;padding:0 16px}
+.brand-logo{height:56px;display:block}
+.brand-title{font-weight:800}
+.brand-sub{opacity:0.9;color:rgba(255,255,255,0.9)}
+
+/* Nav */
+.main-nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0;align-items:center}
+.main-nav a{display:inline-block;padding:8px 12px;border-radius:8px;color:var(--white);font-weight:600;text-decoration:none;position:relative}
+.main-nav a:hover{background:rgba(255,255,255,0.04)}
+
+/* Underline for active nav (animated) */
+.main-nav a::after{content:"";position:absolute;left:12px;right:12px;bottom:-6px;height:3px;border-radius:6px;background:transparent;transform:scaleX(0);transform-origin:left center;transition:transform .28s cubic-bezier(.2,.9,.2,1),background .2s}
+.main-nav a.active::after{transform:scaleX(1);background:var(--accent)}
+@media(max-width:720px){ .main-nav a::after{display:none} }
+
+/* Header controls */
+.header-controls{display:flex;align-items:center;gap:8px}
+.nav-search{position:relative;display:flex;align-items:center}
+.nav-search input{width:220px;padding:6px 36px 6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#fff;outline:none}
+.nav-search .search-btn{position:absolute;right:4px;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:#fff}
+@media(max-width:900px){ .nav-search input{width:140px} }
+@media(max-width:720px){ .nav-search{display:none} }
+
+/* Social icons in header */
+.social-inline .social-icon{color:#fff;text-decoration:none;margin-right:6px;padding:8px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;transition:transform .28s, box-shadow .28s}
+.social-inline .social-icon i{font-size:18px}
+.social-inline .social-icon:hover{transform:translateY(-4px);box-shadow:0 6px 18px rgba(2,6,23,0.12)}
+
+/* Theme toggle */
+.theme-toggle{width:56px;height:32px;border-radius:999px;border:none;background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));display:inline-flex;align-items:center;padding:4px;position:relative;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,0.08)}
+.theme-toggle .toggle-circle{width:24px;height:24px;border-radius:999px;background:#fff;box-shadow:0 6px 18px rgba(2,6,23,0.12);transform:translateX(0);transition:transform .36s cubic-bezier(.2,.9,.2,1), background .3s}
+[data-theme="dark"] .theme-toggle .toggle-circle{background:#0b1220;transform:translateX(24px)}
+
+/* HERO */
+.hero {
+    height: 100vh;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 86px;
+    background: transparent;
+}
+
+/* Hero background image - REMOVED (now on body) */
+/* .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.45);
+    z-index: -2;
+} */
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7,33,70,0.6), rgba(0,0,0,0.4));
+    z-index: -1;
+}
+
+.hero-inner {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    max-width: 980px;
+    padding: 20px;
+}
+.hero-logo{height:120px;width:auto;margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.55))}
+.hero h1{font-size:clamp(28px,6vw,52px);margin:0 0 8px;font-weight:800}
+.lead{opacity:0.95}
+.btn-cta{border-radius:10px;padding:10px 18px;font-weight:700}
+.btn-outline{background:transparent;border:2px solid rgba(255,255,255,0.3);color:var(--white)}
+
+/* Main sections */
+.section{padding:56px 16px; background: rgba(255, 255, 255, 0.95); position: relative;}
+.bg-light{background: rgba(247, 248, 251, 0.95) !important;}
+
+/* Cards */
+.card-cat{background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px);}
+.model-card img{width:100%;height:auto;min-height:420px;max-height:650px;object-fit:cover;display:block;background:#f8f9fa}
+.card-cat h3{margin-top:0}
+.collection-title{font-size:1.05rem;margin:0}
+
+/* availability badge */
+.availability{
+  position:absolute;left:12px;top:12px;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px;color:#fff;box-shadow:0 6px 18px rgba(2,6,23,0.08)
+}
+.availability.available{background:var(--accent-2)}
+.availability.sold{background:#6c6f76}
+
+/* Cloth overlay with status and likes */
+.cloth-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.cloth-overlay > * {
+  pointer-events: auto;
+}
+
+/* Status badge */
+.status-badge {
+  background: rgba(255, 255, 255, 0.95);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.status-badge.available {
+  background: #2ecc71;
+}
+
+.status-badge.sold {
+  background: #e74c3c;
+}
+
+/* Heart like button */
+.likes-panel {
+  position: relative;
+}
+
+.like-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  position: relative;
+}
+
+.like-btn:hover {
+  transform: scale(1.1);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.like-btn:active {
+  transform: scale(0.9);
+}
+
+.like-btn span:first-child {
+  font-size: 16px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  line-height: 1;
+}
+
+.like-btn.liking span:first-child {
+  animation: pulse 0.4s ease-in-out;
+}
+
+.like-btn .likes-count {
+  font-size: 9px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+/* WhatsApp floating button (small circle) */
+.btn-floating{border-radius:999px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:none;box-shadow:0 10px 24px rgba(2,6,23,0.08);cursor:pointer}
+.btn-wh{background:var(--accent-2);color:#fff}
+.btn-floating i{font-size:18px}
+
+/* Ensure order button doesn't overlap pagination */
+.swiper { position: relative; padding-bottom: 34px; /* space for pagination */ }
+.custom-nav{color:var(--accent);top:45%;transform:translateY(-50%);background:rgba(255,255,255,0.95);width:44px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(2,6,23,0.08)}
+.swiper-button-prev.custom-nav{left:6px}
+.swiper-button-next.custom-nav{right:6px}
+.swiper-pagination{bottom:8px!important}
+
+/* More button */
+.more-btn{font-size:0.82rem}
+
+/* Ratings summary */
+.ratings-summary .rating-value{font-weight:800;font-size:1.05rem;margin-right:8px}
+.rating-stars{color:goldenrod}
+
+/* reviews dashboard */
+.reviews-dashboard .big-rating{display:flex;align-items:center;gap:12px}
+.rating-number{font-size:28px;font-weight:800}
+.rating-stars{font-size:18px;color:#ffb400}
+
+/* Footer */
+.site-footer{background: rgba(7, 20, 40, 0.95); color:#fff; backdrop-filter: blur(10px);}
+.footer-social .social-icon{color:#fff;text-decoration:none;margin-left:10px;padding:6px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center}
+.footer-social .social-icon i{margin-right:8px}
+.social-username{opacity:0.9}
+
+/* Floating animation for social icons */
+.social-icon{transition:transform .28s,box-shadow .28s}
+.social-icon:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(2,6,23,0.12)}
+
+/* Responsive */
+@media(min-width:720px){
+  .nav-wrap{padding:6px 0}
+  .model-card img{min-height:500px;max-height:700px}
+}
+@media(max-width:720px){
+  .hero{padding-top:96px;height:auto}
+  .main-nav ul{display:none}
+  .nav-wrap{gap:12px}
+  .model-card img{min-height:350px;max-height:550px}
+  .nav-search{display:none}
+}
+@media(max-width:480px){
+  .model-card img{min-height:300px;max-height:450px}
+}
+
+/* Heart pulse animation */
+@keyframes pulse {
+  0% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.4); 
+  }
+  100% { 
+    transform: scale(1); 
+  }
+}
+
+/* Dark theme */
+[data-theme="dark"]{
+  --black:#e6eef8;
+  --white:#0b1220;
+  --muted:rgba(255,255,255,0.06);
+  --accent:#7ec0ff;
+}
+[data-theme="dark"] body{
+  color:var(--black);
+  /* Keep the fixed background image, add dark overlay */
+  background-image: linear-gradient(rgba(7, 17, 34, 0.85), rgba(7, 17, 34, 0.85)), url('images/hero-bg.jpg');
+}
+[data-theme="dark"] .section{background: rgba(7, 20, 40, 0.92);}
+[data-theme="dark"] .bg-light{background: rgba(11, 18, 32, 0.90) !important;}
+[data-theme="dark"] .site-footer{background: rgba(2, 6, 10, 0.95);}
+[data-theme="dark"] .card-cat{background: rgba(7, 20, 40, 0.95); color:var(--black); backdrop-filter: blur(10px);}
+
+.collection-card {
+  width: 100%;
+  display: block;
+  margin-bottom: 2rem; /* adds spacing between categories */
+}

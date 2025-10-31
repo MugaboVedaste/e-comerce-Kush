@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kush Women's Fashion Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+    />
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Main stylesheet (from static) -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'store/style.css' %}?v=9" />
+  </head>
+  <body>
+    <!-- PRELOADER -->
+    <div id="preloader" class="preloader">
+      <div class="preloader-inner">
+        <div class="preloader-k">K</div>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="nav-wrap container">
+        <div class="brand d-flex align-items-center gap-3">
+          <img
+            src="{% static 'store/images/Logo.png' %}"
+            alt="Kush logo"
+            class="brand-logo"
+          />
+          <div>
+            <div class="brand-title">Kush Women's Fashion Store</div>
+            <small class="brand-sub">Officially Kush</small>
+          </div>
+        </div>
+
+        <nav class="main-nav">
+          <ul>
+            <li>
+              <a href="{% url 'landing_page' %}#home" class="nav-link">Home</a>
+            </li>
+            <li><a href="{% url 'about' %}" class="nav-link">About Us</a></li>
+            <li>
+              <a href="{% url 'landing_page' %}#order" class="nav-link"
+                >Order</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'landing_page' %}#contact" class="nav-link"
+                >Contact Us</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'landing_page' %}#faq" class="nav-link">FAQ</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header-controls d-flex align-items-center gap-2">
+          <!-- SEARCH -->
+          <div class="nav-search">
+            <input
+              id="siteSearch"
+              class="form-control"
+              type="search"
+              placeholder="Search collections, models..."
+              aria-label="Search"
+            />
+            <button id="searchBtn" class="search-btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+
+          <!-- Social icons -->
+          <div class="social-inline d-none d-md-flex">
+            <a
+              href="https://instagram.com/officiallykush"
+              class="social-icon"
+              target="_blank"
+              aria-label="Instagram"
+              ><i class="fa-brands fa-instagram"></i
+            ></a>
+            <a
+              href="https://facebook.com/officiallykush"
+              class="social-icon"
+              target="_blank"
+              aria-label="Facebook"
+              ><i class="fa-brands fa-facebook"></i
+            ></a>
+            <a
+              href="https://twitter.com/officiallykush"
+              class="social-icon"
+              target="_blank"
+              aria-label="Twitter"
+              ><i class="fa-brands fa-x-twitter"></i
+            ></a>
+          </div>
+
+          <!-- Theme toggle -->
+          <button
+            id="themeToggle"
+            class="theme-toggle"
+            aria-label="Toggle theme"
+          >
+            <span class="toggle-circle"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>{% block content %} {% endblock %}</main>
+
+    <footer class="site-footer py-3">
+      <div
+        class="container d-flex justify-content-between align-items-center flex-column flex-md-row gap-2"
+      >
+        <div class="text-white">
+          &copy; 2025 Kush Women's Fashion Store — All rights reserved.
+        </div>
+        <div class="footer-social">
+          <!-- white social icons + username -->
+          <a
+            class="social-icon"
+            href="https://instagram.com/officiallykush"
+            target="_blank"
+            aria-label="Instagram"
+            style="color: white"
+            ><i class="fa-brands fa-instagram"></i>
+            <span class="social-username d-none d-md-inline">instagram</span></a
+          >
+          <a
+            class="social-icon"
+            href="https://facebook.com/officiallykush"
+            target="_blank"
+            aria-label="Facebook"
+            ><i class="fa-brands fa-facebook"></i>
+            <span class="social-username d-none d-md-inline">faceboook</span></a
+          >
+          <a
+            class="social-icon"
+            href="https://twitter.com/officiallykush"
+            target="_blank"
+            aria-label="Twitter"
+            ><i class="fa-brands fa-x-twitter"></i>
+            <span class="social-username d-none d-md-inline">x</span></a
+          >
+          <a
+            class="social-icon"
+            href="https://wa.me/250782021235"
+            target="_blank"
+            aria-label="WhatsApp"
+            ><i class="fa-brands fa-whatsapp"></i>
+            <span class="social-username d-none d-md-inline">WhatsApp</span></a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script src="{% static 'store/script.js' %}?v=13"></script>
+  </body>
+</html>

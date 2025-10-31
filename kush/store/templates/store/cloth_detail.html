@@ -1,42 +1,435 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>{{ cloth.name }} - Kush</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ cloth.name }} - Manager Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .detail-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .detail-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .detail-content {
+            padding: 40px;
+        }
+
+        .image-gallery {
+            margin-bottom: 30px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .thumbnail-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .thumbnail {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-sold {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-like {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-like:hover:not(:disabled) {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-like:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .manager-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .description-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 25px;
+        }
+
+        .description-box p {
+            color: #495057;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .detail-header h1 {
+                font-size: 22px;
+            }
+
+            .detail-content {
+                padding: 25px;
+            }
+
+            .main-image {
+                height: 300px;
+            }
+
+            .thumbnail {
+                width: 100px;
+                height: 100px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
-<body class="container py-4">
-    <p><a href="{% url 'cloth_list' %}">Back to clothes</a></p>
-    <div class="row">
-        <div class="col-md-6">
-            {% if cloth.image_front %}
-                <img src="{{ cloth.image_front.url }}" class="img-fluid" alt="front">
-            {% endif %}
-            <div class="d-flex gap-2 mt-2">
-                {% if cloth.image_left %}
-                    <img src="{{ cloth.image_left.url }}" style="max-width:120px;" alt="left">
-                {% endif %}
-                {% if cloth.image_right %}
-                    <img src="{{ cloth.image_right.url }}" style="max-width:120px;" alt="right">
-                {% endif %}
+<body>
+    <div class="container">
+        <div class="detail-card">
+            <div class="detail-header">
+                <h1>
+                    <i class="fa-solid fa-shirt"></i>
+                    {{ cloth.name }}
+                </h1>
+                <a href="{% url 'manager_dashboard' %}" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+
+            <div class="detail-content">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="image-gallery">
+                            {% if cloth.image_front %}
+                            <img src="{{ cloth.image_front.url }}" class="main-image" alt="{{ cloth.name }} - Front">
+                            {% else %}
+                            <div class="main-image d-flex align-items-center justify-content-center bg-light">
+                                <i class="fa-solid fa-image fa-5x text-muted"></i>
+                            </div>
+                            {% endif %}
+
+                            <div class="thumbnail-row">
+                                {% if cloth.image_left %}
+                                <img src="{{ cloth.image_left.url }}" class="thumbnail" alt="Left view">
+                                {% endif %}
+                                {% if cloth.image_right %}
+                                <img src="{{ cloth.image_right.url }}" class="thumbnail" alt="Right view">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="info-section">
+                            <h2>
+                                <i class="fa-solid fa-circle-info"></i>
+                                Product Information
+                            </h2>
+                            
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fa-solid fa-tag"></i>
+                                    Price
+                                </span>
+                                <span class="info-value">{{ cloth.price }} RWF</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                    Status
+                                </span>
+                                <span class="status-badge {% if cloth.status == 'available' %}status-available{% else %}status-sold{% endif %}">
+                                    {{ cloth.get_status_display }}
+                                </span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fa-solid fa-heart"></i>
+                                    Likes
+                                </span>
+                                <span class="info-value">{{ cloth.likes|default:0 }}</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    Manager
+                                </span>
+                                <span class="info-value">{{ cloth.manager.username }}</span>
+                            </div>
+                        </div>
+
+                        {% if cloth.description %}
+                        <div class="description-box">
+                            <h5 style="color: #667eea; margin-bottom: 15px;">
+                                <i class="fa-solid fa-align-left"></i>
+                                Description
+                            </h5>
+                            <p>{{ cloth.description }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if request.user.is_authenticated and request.user == cloth.manager %}
+                        <div class="action-buttons">
+                            <a href="{% url 'edit_cloth' cloth.id %}" class="btn-custom btn-edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit Product
+                            </a>
+                            <button type="button" class="btn-custom btn-like" id="likeBtn" onclick="likeCloth()">
+                                <i class="fa-solid fa-heart"></i>
+                                Like (<span id="likeCount">{{ cloth.likes|default:0 }}</span>)
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <h1>{{ cloth.name }}</h1>
-            <p>{{ cloth.description }}</p>
-            <p><strong>Price:</strong> ${{ cloth.price }}</p>
-            <p><strong>Status:</strong> {{ cloth.get_status_display }}</p>
-            <p><strong>Likes:</strong> {{ cloth.likes }}</p>
-
-            <form method="post" action="{% url 'like_cloth' cloth.id %}">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-outline-success" type="submit">Like</button>
-            </form>
-
-            {% if request.user.is_authenticated and request.user == cloth.manager %}
-                <p class="mt-3"><a class="btn btn-secondary" href="{% url 'edit_cloth' cloth.id %}">Edit</a></p>
-            {% endif %}
-        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function likeCloth() {
+            const csrftoken = getCookie('csrftoken');
+            const clothId = {{ cloth.id }};
+            const likeBtn = document.getElementById('likeBtn');
+            const likeCount = document.getElementById('likeCount');
+
+            // Disable button during request
+            likeBtn.disabled = true;
+
+            fetch(`/clothes/${clothId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    likeCount.textContent = data.likes;
+                    // Add animation
+                    likeBtn.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        likeBtn.style.transform = 'scale(1)';
+                    }, 200);
+                } else {
+                    alert('Failed to like the item');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            })
+            .finally(() => {
+                // Re-enable button
+                likeBtn.disabled = false;
+            });
+        }
+    </script>
 </body>
 </html>

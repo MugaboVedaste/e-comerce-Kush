@@ -1,0 +1,247 @@
+{% extends 'store/base.html' %} {% load static %} {% block content %}
+<!-- ABOUT -->
+<section class="section py-5 bg-light" style="margin-top: 86px">
+  <div class="container" data-aos="fade-right">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="about-card p-4 rounded">
+          <h2>About Kush</h2>
+          <p>
+            At Kush, we believe style is more than what you wear — it's how you
+            show up, express yourself, and leave your mark. Our mission is
+            simple: to make sure you always look different, bold, and
+            unforgettable.
+          </p>
+          <p>
+            <strong>Be bold.<br />Be rare.<br />Be you.</strong>
+          </p>
+          <ul>
+            <li>
+              We design for the woman who knows who she is — modern, confident,
+              and unapologetically herself. Each Kush collection is curated with
+              intention, blending timeless silhouettes with daring details that
+              celebrate individuality and creativity.
+            </li>
+            <li>
+              Whether it's an everyday essential or a statement piece that
+              steals the spotlight, our pieces are made to empower your presence
+              — because true style doesn't follow trends, it defines them.
+            </li>
+            <li>
+              At Kush, we believe in connection. That's why we offer
+              personalized service and direct WhatsApp ordering, so you can
+              reach us instantly for styling tips, size guidance, or custom
+              orders. We're not just a brand — we're your style partner, here to
+              make dressing up feel effortless and personal.
+            </li>
+            <li>
+              Every Kush creation is made with care, ethics, and precision. We
+              work closely with skilled artisans and responsible producers who
+              share our values of quality, sustainability, and fair
+              craftsmanship. When you wear Kush, you wear a piece of a story —
+              one that's built on passion, integrity, and artistry.
+            </li>
+          </ul>
+          <p>
+            Join the Kush movement — where boldness meets authenticity, and
+            every outfit becomes a declaration of who you are.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="about-img rounded overflow-hidden" style="max-height: 500px;">
+          <img
+            src="{% static 'store/images/background.png' %}"
+            alt="Kush store image"
+            loading="lazy"
+            style="width: 100%; height: 500px; object-fit: cover;"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Section -->
+    <div class="row mt-5" data-aos="fade-up">
+      <div class="col-12">
+        <h2 class="text-center mb-4">Visit Our Store</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="location-info p-4 bg-white rounded shadow-sm">
+          <h4 class="mb-3">
+            <i class="fa-solid fa-location-dot text-primary me-2"></i>
+            Our Location
+          </h4>
+          <p class="mb-2">
+            <strong>Kush Women's Clothes Store</strong>
+          </p>
+          <p class="mb-2">1st Floor Unify House</p>
+          <p class="mb-2">Downtown Mumujyi</p>
+          <p class="mb-3">Kigali, Rwanda 🇷🇼</p>
+          
+          <div class="mt-4">
+            <h5 class="mb-3">Contact Information</h5>
+            <p class="mb-2">
+              <i class="fa-solid fa-phone text-success me-2"></i>
+              <a href="tel:+250782021235">+250 782 021 235</a>
+            </p>
+            <p class="mb-2">
+              <i class="fa-brands fa-whatsapp text-success me-2"></i>
+              <a href="https://wa.me/250782021235" target="_blank">WhatsApp Us</a>
+            </p>
+            <p class="mb-2">
+              <i class="fa-solid fa-envelope text-primary me-2"></i>
+              <a href="mailto:info@kushfashion.rw">info@kushfashion.rw</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="map-container rounded overflow-hidden shadow-sm">
+          <!-- Google Maps Embed for Downtown Kigali (Unify House area) -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.5117834842186!2d30.05876931475395!3d-1.9536488373333333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca425b6f0c5e5%3A0x74c43c5e82594c4b!2sDowntown%20Kigali%2C%20Rwanda!5e0!3m2!1sen!2sus!4v1635789012345!5m2!1sen!2sus"
+            width="100%"
+            height="400"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Kush Store Location - Downtown Kigali"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .location-info {
+    height: 100%;
+  }
+  
+  .location-info a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .location-info a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  
+  .map-container {
+    position: relative;
+    height: 400px;
+  }
+  
+  .map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Dark Mode Styles */
+  [data-theme="dark"] .about-card,
+  [data-theme="dark"] .location-info {
+    background: rgba(11, 18, 32, 0.95) !important;
+    color: #ffffff;
+  }
+
+  [data-theme="dark"] .about-card h2,
+  [data-theme="dark"] .about-card h3,
+  [data-theme="dark"] .about-card h4,
+  [data-theme="dark"] .about-card h5,
+  [data-theme="dark"] .about-card p,
+  [data-theme="dark"] .about-card li,
+  [data-theme="dark"] .about-card strong,
+  [data-theme="dark"] .location-info h2,
+  [data-theme="dark"] .location-info h3,
+  [data-theme="dark"] .location-info h4,
+  [data-theme="dark"] .location-info h5,
+  [data-theme="dark"] .location-info p,
+  [data-theme="dark"] .location-info strong {
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .location-info a {
+    color: #ffffff;
+  }
+
+  [data-theme="dark"] .location-info a:hover {
+    color: var(--accent);
+  }
+
+  [data-theme="dark"] .text-center {
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .section {
+    background: rgba(7, 20, 40, 0.92) !important;
+  }
+
+  /* Mobile Responsive Styles */
+  @media (max-width: 768px) {
+    .about-card {
+      margin-bottom: 30px;
+    }
+
+    .about-img {
+      max-height: 350px !important;
+    }
+
+    .about-img img {
+      height: 350px !important;
+    }
+
+    .map-container {
+      height: 300px;
+      margin-top: 20px;
+    }
+
+    .location-info {
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-top: 70px !important;
+    }
+
+    .row.mt-5 {
+      margin-top: 3rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .about-card {
+      padding: 1.5rem !important;
+    }
+
+    .location-info {
+      padding: 1.5rem !important;
+    }
+
+    .about-img {
+      max-height: 250px !important;
+    }
+
+    .about-img img {
+      height: 250px !important;
+    }
+
+    .map-container {
+      height: 250px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    h4 {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+{% endblock %}

@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
 from .models import Cloth
 from .forms import ClothForm
 from .models import Category
@@ -31,7 +33,18 @@ def manager_dashboard(request):
     if not request.user.is_staff:
         return redirect('manager_login')  # Extra security
     clothes = Cloth.objects.filter(manager=request.user)
-    return render(request, 'store/manager_dashboard.html', {'clothes': clothes})
+    
+    # Calculate statistics
+    total_items = clothes.count()
+    available_items = clothes.filter(status='available').count()
+    sold_items = clothes.filter(status='sold').count()
+    
+    return render(request, 'store/manager_dashboard.html', {
+        'clothes': clothes,
+        'total_items': total_items,
+        'available_items': available_items,
+        'sold_items': sold_items
+    })
 
 
 # ----- Logout -----
@@ -41,12 +54,24 @@ def manager_logout(request):
     return redirect('manager_login')
 
 
-@require_POST
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.http import require_http_methods
+
+# Simple like view - no login required, CSRF exempt for anonymous likes
+@csrf_exempt
+@require_http_methods(["POST"])
 def like_cloth(request, cloth_id):
-    cloth = get_object_or_404(Cloth, id=cloth_id)
-    cloth.likes += 1
-    cloth.save()
-    return redirect('cloth_detail', cloth_id=cloth.id)
+    """Add one like to the cloth - anonymous users can like"""
+    try:
+        cloth = Cloth.objects.get(id=cloth_id)
+        cloth.likes = (cloth.likes or 0) + 1
+        cloth.save()
+        return JsonResponse({'likes': cloth.likes, 'success': True})
+    except Cloth.DoesNotExist:
+        return JsonResponse({'error': 'Cloth not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 
 # ----- Public / Manager-facing Cloth views -----
@@ -61,10 +86,26 @@ def landing_page(request):
     # load categories and attach available clothes to each for the template
     categories = list(Category.objects.all())
     for cat in categories:
-        # show available clothes only on landing
-        cat.items = cat.clothes.filter(status='available')
+        # show all clothes in each category
+        cat.items = cat.clothes.all()
 
     return render(request, 'store/Sample Kush.html', {'categories': categories})
+
+
+def category_detail(request, slug):
+    """Display all clothes in a specific category."""
+    category = get_object_or_404(Category, slug=slug)
+    clothes = category.clothes.all()  # Get all clothes in this category
+    
+    return render(request, 'store/category_detail.html', {
+        'category': category,
+        'clothes': clothes
+    })
+
+
+def about(request):
+    """Render the about page."""
+    return render(request, 'store/about.html')
 
 
 def cloth_detail(request, cloth_id):
