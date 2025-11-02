@@ -19,6 +19,10 @@ urlpatterns = [
     # Like endpoint
     path('clothes/<int:cloth_id>/like/', views.like_cloth, name='like_cloth'),
 
+    # Site-wide Rating & Review endpoints
+    path('submit-rating/', views.submit_rating, name='submit_rating'),
+    path('submit-review/', views.submit_review, name='submit_review'),
+
     # Manager auth / dashboard
     path('manager/login/', views.manager_login, name='manager_login'),
     path('manager/dashboard/', views.manager_dashboard, name='manager_dashboard'),

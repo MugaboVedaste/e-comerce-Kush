@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Kush Women's Fashion Store</title>
 
+    <!-- Favicon -->
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'store/images/Logo.png' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'store/images/Logo.png' %}" />
+    <link rel="apple-touch-icon" href="{% static 'store/images/Logo.png' %}" />
+
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -25,7 +31,7 @@
 
     <!-- Main stylesheet (from static) -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'store/style.css' %}?v=9" />
+    <link rel="stylesheet" href="{% static 'store/style.css' %}?v=19" />
   </head>
   <body>
     <!-- PRELOADER -->
@@ -49,7 +55,14 @@
           </div>
         </div>
 
-        <nav class="main-nav">
+        <!-- Hamburger Menu Button (Mobile) -->
+        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="main-nav" id="mainNav">
           <ul>
             <li>
               <a href="{% url 'landing_page' %}#home" class="nav-link">Home</a>
@@ -89,7 +102,7 @@
           <!-- Social icons -->
           <div class="social-inline d-none d-md-flex">
             <a
-              href="https://instagram.com/officiallykush"
+              href="https://www.instagram.com/officiallykush2025"
               class="social-icon"
               target="_blank"
               aria-label="Instagram"
@@ -125,6 +138,85 @@
 
     <main>{% block content %} {% endblock %}</main>
 
+    <!-- Site-Wide Rating & Review Section -->
+    <section class="container my-4">
+      <div class="rating-section-compact">
+        <!-- Top Row: Rating and Review Form on Same Line -->
+        <div class="row align-items-start">
+          <!-- Left: Rating Stars -->
+          <div class="col-md-3">
+            <h5 class="mb-2">Rate Us</h5>
+            <div class="average-rating-inline">
+              <span class="rating-number">{{ average_rating|default:"0.0" }}</span>
+              <span class="rating-stars">
+                {% if average_rating >= 0.5 %}⭐{% endif %}
+                {% if average_rating >= 1.5 %}⭐{% endif %}
+                {% if average_rating >= 2.5 %}⭐{% endif %}
+                {% if average_rating >= 3.5 %}⭐{% endif %}
+                {% if average_rating >= 4.5 %}⭐{% endif %}
+              </span>
+            </div>
+            <p class="rating-count-inline">({{ total_ratings|default:"0" }} ratings)</p>
+            
+            <!-- Star Rating Input -->
+            <div class="star-rating-input" id="starRating">
+              <span class="star" data-rating="1">⭐</span>
+              <span class="star" data-rating="2">⭐</span>
+              <span class="star" data-rating="3">⭐</span>
+              <span class="star" data-rating="4">⭐</span>
+              <span class="star" data-rating="5">⭐</span>
+            </div>
+            <div class="thank-you-message" id="thankYouMessage">
+              <i class="fa-solid fa-check-circle"></i> Thanks!
+            </div>
+          </div>
+
+          <!-- Right: Review Form (Inline) -->
+          <div class="col-md-9">
+            <h5 class="mb-2">Write Your Review</h5>
+            <form class="review-form-inline" id="reviewForm">
+              {% csrf_token %}
+              <div class="row g-2">
+                <div class="col-md-3">
+                  <input type="text" id="reviewerName" name="name" required placeholder="Your name *" class="form-control form-control-sm" />
+                </div>
+                <div class="col-md-3">
+                  <input type="text" id="reviewerContact" name="contact" placeholder="Email/phone (optional)" class="form-control form-control-sm" />
+                </div>
+                <div class="col-md-4">
+                  <input type="text" id="reviewText" name="review_text" required placeholder="Share your experience..." class="form-control form-control-sm" />
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" class="submit-btn-inline w-100">
+                    <i class="fa-solid fa-paper-plane"></i> Submit
+                  </button>
+                </div>
+              </div>
+            </form>
+            <div class="thank-you-message mt-2" id="reviewThankYouMessage">
+              <i class="fa-solid fa-check-circle"></i> <span id="reviewThankYouText"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: Recent Reviews (Small Space Below) -->
+        <div class="recent-reviews-inline mt-3">
+          {% if recent_reviews %}
+            <h6 class="mb-2">Recent Feedback</h6>
+            <div class="reviews-scroll">
+              {% for review in recent_reviews|slice:":5" %}
+              <span class="review-pill">
+                <strong>{{ review.name }}:</strong> {{ review.review_text|truncatewords:8 }}
+              </span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted mb-0"><small>No reviews yet. Be the first!</small></p>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
     <footer class="site-footer py-3">
       <div
         class="container d-flex justify-content-between align-items-center flex-column flex-md-row gap-2"
@@ -136,7 +228,7 @@
           <!-- white social icons + username -->
           <a
             class="social-icon"
-            href="https://instagram.com/officiallykush"
+            href="https://www.instagram.com/officiallykush2025"
             target="_blank"
             aria-label="Instagram"
             style="color: white"
@@ -161,7 +253,7 @@
           >
           <a
             class="social-icon"
-            href="https://wa.me/250782021235"
+            href="https://wa.me/250785440056"
             target="_blank"
             aria-label="WhatsApp"
             ><i class="fa-brands fa-whatsapp"></i>
@@ -176,6 +268,111 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
-    <script src="{% static 'store/script.js' %}?v=13"></script>
+    <script src="{% static 'store/script.js' %}?v=15"></script>
+
+    <!-- Rating & Review JavaScript -->
+    <script>
+      // ===== STAR RATING FUNCTIONALITY =====
+      const stars = document.querySelectorAll('.star-rating-input .star');
+      const thankYouMessage = document.getElementById('thankYouMessage');
+
+      // Star hover effect
+      stars.forEach((star, index) => {
+        star.addEventListener('mouseenter', () => {
+          stars.forEach((s, i) => {
+            if (i <= index) {
+              s.classList.add('active');
+            } else {
+              s.classList.remove('active');
+            }
+          });
+        });
+
+        // Star click to submit rating
+        star.addEventListener('click', () => {
+          const rating = star.getAttribute('data-rating');
+          submitRating(rating);
+        });
+      });
+
+      // Reset stars on mouse leave
+      document.getElementById('starRating').addEventListener('mouseleave', () => {
+        stars.forEach(s => s.classList.remove('active'));
+      });
+
+      // Submit rating via AJAX
+      function submitRating(rating) {
+        fetch('{% url "submit_rating" %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `rating=${rating}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show thank you message
+            thankYouMessage.classList.add('show');
+            
+            // Update average rating display
+            if (data.average_rating) {
+              document.querySelector('.rating-number').textContent = data.average_rating;
+              document.querySelector('.rating-count').textContent = `(${data.total_ratings} ratings)`;
+            }
+
+            // Hide message after 3 seconds
+            setTimeout(() => {
+              thankYouMessage.classList.remove('show');
+            }, 3000);
+          } else {
+            alert('Error: ' + (data.error || 'Could not submit rating'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to submit rating. Please try again.');
+        });
+      }
+
+      // ===== REVIEW FORM SUBMISSION (NO MODAL) =====
+      const reviewForm = document.getElementById('reviewForm');
+      const reviewThankYouMessage = document.getElementById('reviewThankYouMessage');
+      const reviewThankYouText = document.getElementById('reviewThankYouText');
+
+      // Submit review form
+      reviewForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(reviewForm);
+
+        fetch('{% url "submit_review" %}', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show thank you message
+            reviewThankYouText.textContent = data.message;
+            reviewThankYouMessage.classList.add('show');
+
+            // Reset form
+            reviewForm.reset();
+
+            // Reload after 2 seconds to show new review
+            setTimeout(() => {
+              location.reload();
+            }, 2000);
+          } else {
+            alert('Error: ' + (data.error || 'Could not submit review'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to submit review. Please try again.');
+        });
+      });
+    </script>
   </body>
 </html>

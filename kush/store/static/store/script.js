@@ -1,5 +1,5 @@
 // Initialize AOS
-console.log('Script.js loaded - Version 11');
+console.log('Script.js loaded - Version 14 - Hamburger Menu Active');
 AOS.init({duration:700,easing:'ease-out-cubic',once:true});
 
 // Hide preloader immediately when DOM is ready
@@ -517,3 +517,43 @@ document.getElementById('leaveReviewBtn')?.addEventListener('click', ()=> {
 // Accessibility: show focus outlines on keyboard navigation
 // --------------------------
 document.addEventListener('keydown', function(e){ if(e.key === 'Tab') document.body.classList.add('show-focus'); });
+
+// --------------------------
+// Hamburger Menu Toggle
+// --------------------------
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburger = document.getElementById('hamburgerMenu');
+  const mainNav = document.getElementById('mainNav');
+  
+  console.log('Hamburger menu init:', hamburger ? 'Found' : 'Not found');
+  console.log('Main nav init:', mainNav ? 'Found' : 'Not found');
+  
+  if (hamburger && mainNav) {
+    console.log('Hamburger menu attached!');
+    
+    hamburger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      console.log('Hamburger clicked!');
+      hamburger.classList.toggle('active');
+      mainNav.classList.toggle('active');
+      console.log('Menu active:', mainNav.classList.contains('active'));
+    });
+    
+    // Close menu when clicking on a nav link
+    const navLinks = mainNav.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        mainNav.classList.remove('active');
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!hamburger.contains(e.target) && !mainNav.contains(e.target)) {
+        hamburger.classList.remove('active');
+        mainNav.classList.remove('active');
+      }
+    });
+  }
+});

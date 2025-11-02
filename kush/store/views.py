@@ -6,9 +6,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
-from .models import Cloth
-from .forms import ClothForm
+from .models import Cloth, SiteRating, SiteReview
+from .forms import ClothForm, SiteRatingForm, SiteReviewForm
 from .models import Category
+from django.db.models import Avg
 
 
 # ----- Manager Login -----
@@ -89,7 +90,17 @@ def landing_page(request):
         # show all clothes in each category
         cat.items = cat.clothes.all()
 
-    return render(request, 'store/Sample Kush.html', {'categories': categories})
+    # Get rating statistics
+    avg_rating = SiteRating.objects.aggregate(Avg('rating'))['rating__avg']
+    total_ratings = SiteRating.objects.count()
+    recent_reviews = SiteReview.objects.filter(is_approved=True)[:5]  # Last 5 approved reviews
+
+    return render(request, 'store/Sample Kush.html', {
+        'categories': categories,
+        'average_rating': round(avg_rating, 1) if avg_rating else 0,
+        'total_ratings': total_ratings,
+        'recent_reviews': recent_reviews,
+    })
 
 
 def category_detail(request, slug):
@@ -97,15 +108,32 @@ def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     clothes = category.clothes.all()  # Get all clothes in this category
     
+    # Get rating statistics
+    avg_rating = SiteRating.objects.aggregate(Avg('rating'))['rating__avg']
+    total_ratings = SiteRating.objects.count()
+    recent_reviews = SiteReview.objects.filter(is_approved=True)[:5]
+    
     return render(request, 'store/category_detail.html', {
         'category': category,
-        'clothes': clothes
+        'clothes': clothes,
+        'average_rating': round(avg_rating, 1) if avg_rating else 0,
+        'total_ratings': total_ratings,
+        'recent_reviews': recent_reviews,
     })
 
 
 def about(request):
     """Render the about page."""
-    return render(request, 'store/about.html')
+    # Get rating statistics
+    avg_rating = SiteRating.objects.aggregate(Avg('rating'))['rating__avg']
+    total_ratings = SiteRating.objects.count()
+    recent_reviews = SiteReview.objects.filter(is_approved=True)[:5]
+    
+    return render(request, 'store/about.html', {
+        'average_rating': round(avg_rating, 1) if avg_rating else 0,
+        'total_ratings': total_ratings,
+        'recent_reviews': recent_reviews,
+    })
 
 
 def cloth_detail(request, cloth_id):
@@ -152,3 +180,74 @@ def edit_cloth(request, cloth_id):
         form = ClothForm(instance=cloth)
 
     return render(request, 'store/cloth_form.html', {'form': form, 'action': 'Edit', 'cloth': cloth})
+
+
+# ----- Site-Wide Rating & Review System -----
+
+def get_client_ip(request):
+    """Helper function to get client's IP address"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def submit_rating(request):
+    """Handle site-wide rating submission (1-5 stars)"""
+    try:
+        rating_value = int(request.POST.get('rating', 0))
+        
+        if rating_value < 1 or rating_value > 5:
+            return JsonResponse({'success': False, 'error': 'Rating must be between 1 and 5'}, status=400)
+        
+        # Create rating
+        rating = SiteRating.objects.create(
+            rating=rating_value,
+            ip_address=get_client_ip(request)
+        )
+        
+        # Calculate new average
+        avg_rating = SiteRating.objects.aggregate(Avg('rating'))['rating__avg']
+        total_ratings = SiteRating.objects.count()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Thank you for rating our website!',
+            'average_rating': round(avg_rating, 1) if avg_rating else 0,
+            'total_ratings': total_ratings
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def submit_review(request):
+    """Handle written review submission"""
+    try:
+        form = SiteReviewForm(request.POST)
+        
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.ip_address = get_client_ip(request)
+            review.save()
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Thank you for your review! We appreciate your feedback.',
+                'review': {
+                    'name': review.name,
+                    'review_text': review.review_text,
+                    'created_at': review.created_at.strftime('%B %d, %Y')
+                }
+            })
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({'success': False, 'errors': errors}, status=400)
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)

@@ -1,39 +1,8 @@
+{% extends "store/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ category.name }} - Kush Women's Fashion Store</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
-    />
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-
-    <!-- Main stylesheet (from static) -->
-    <link rel="stylesheet" href="{% static 'store/style.css' %}?v=9" />
-
-    <!-- CSRF token for AJAX requests -->
-    <meta name="csrf-token" content="{{ csrf_token }}" />
-
-    <style>
+{% block content %}
+<style>
       /* Category page specific styles */
       .category-hero {
         padding: 120px 0 60px;
@@ -123,91 +92,47 @@
       .back-link:hover {
         color: var(--black);
       }
-    </style>
-  </head>
-  <body>
-    <!-- HEADER (same as landing page) -->
-    <header class="site-header">
-      <div class="nav-wrap container">
-        <div class="brand d-flex align-items-center gap-3">
-          <img
-            src="{% static 'store/images/Logo.png' %}"
-            alt="Kush logo"
-            class="brand-logo"
-          />
-          <div>
-            <div class="brand-title">Kush Women's Fashion Store</div>
-            <small class="brand-sub">Officially Kush</small>
-          </div>
-        </div>
 
-        <nav class="main-nav">
-          <ul>
-            <li>
-              <a href="{% url 'landing_page' %}#home" class="nav-link">Home</a>
-            </li>
-            <li><a href="{% url 'about' %}" class="nav-link">About Us</a></li>
-            <li><a href="#order" class="nav-link">Order</a></li>
-            <li><a href="#contact" class="nav-link">Contact Us</a></li>
-            <li><a href="#faq" class="nav-link">FAQ</a></li>
-          </ul>
-        </nav>
+      /* Swiper specific styles for category detail */
+      .cloth-item-wrapper .swiper {
+        width: 100%;
+        height: 100%;
+      }
 
-        <div class="header-controls d-flex align-items-center gap-2">
-          <!-- SEARCH -->
-          <div class="nav-search">
-            <input
-              id="siteSearch"
-              class="form-control"
-              type="search"
-              placeholder="Search collections, models..."
-              aria-label="Search"
-            />
-            <button id="searchBtn" class="search-btn" aria-label="Search">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-          </div>
+      .cloth-item-wrapper .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+      }
 
-          <!-- Social icons -->
-          <div class="social-inline d-none d-md-flex">
-            <a
-              href="https://instagram.com/officiallykush"
-              class="social-icon"
-              target="_blank"
-              aria-label="Instagram"
-              ><i class="fa-brands fa-instagram"></i
-            ></a>
-            <a
-              href="https://facebook.com/officiallykush"
-              class="social-icon"
-              target="_blank"
-              aria-label="Facebook"
-              ><i class="fa-brands fa-facebook"></i
-            ></a>
-            <a
-              href="https://twitter.com/officiallykush"
-              class="social-icon"
-              target="_blank"
-              aria-label="Twitter"
-              ><i class="fa-brands fa-x-twitter"></i
-            ></a>
-          </div>
+      .cloth-item-wrapper .swiper-slide img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        display: block;
+      }
 
-          <!-- Theme toggle -->
-          <button
-            id="themeToggle"
-            class="theme-toggle"
-            aria-label="Toggle theme"
-          >
-            <span class="toggle-circle"></span>
-          </button>
-        </div>
-      </div>
-    </header>
+      .cloth-item-wrapper .swiper-pagination {
+        bottom: 10px !important;
+      }
 
-    <main>
+      .cloth-item-wrapper .swiper-pagination-bullet {
+        background: #fff;
+        opacity: 0.7;
+        width: 8px;
+        height: 8px;
+      }
 
-    <!-- CATEGORY HERO SECTION -->
+      .cloth-item-wrapper .swiper-pagination-bullet-active {
+        background: var(--accent);
+        opacity: 1;
+        width: 10px;
+        height: 10px;
+      }
+</style>
+
+<!-- CATEGORY HERO SECTION -->
     <section class="category-hero">
       <div class="container">
         <h1 class="display-4 fw-bold mb-3">{{ category.name }}</h1>
@@ -290,9 +215,9 @@
               <div class="cloth-overlay">
                 <div class="status-badge {{ cloth.status }}">
                   {% if cloth.status == 'available' %}
-                  <i class="fa-solid fa-check"></i>
+                  <i class="fa-solid fa-check"></i> Available
                   {% else %}
-                  <i class="fa-solid fa-x"></i>
+                  <i class="fa-solid fa-x"></i> Sold
                   {% endif %}
                 </div>
                 <div class="likes-panel">
@@ -343,53 +268,7 @@
       </div>
     </section>
 
-    <footer class="site-footer py-3">
-      <div
-        class="container d-flex justify-content-between align-items-center flex-column flex-md-row gap-2"
-      >
-        <div class="text-white">
-          &copy; 2025 Kush Women's Fashion Store — All rights reserved.
-        </div>
-        <div class="footer-social">
-          <!-- white social icons + username -->
-          <a
-            class="social-icon"
-            href="https://instagram.com/officiallykush"
-            target="_blank"
-            aria-label="Instagram"
-            style="color: white"
-            ><i class="fa-brands fa-instagram"></i>
-            <span class="social-username d-none d-md-inline">instagram</span></a
-          >
-          <a
-            class="social-icon"
-            href="https://facebook.com/officiallykush"
-            target="_blank"
-            aria-label="Facebook"
-            ><i class="fa-brands fa-facebook"></i>
-            <span class="social-username d-none d-md-inline">faceboook</span></a
-          >
-          <a
-            class="social-icon"
-            href="https://twitter.com/officiallykush"
-            target="_blank"
-            aria-label="Twitter"
-            ><i class="fa-brands fa-x-twitter"></i>
-            <span class="social-username d-none d-md-inline">x</span></a
-          >
-          <a
-            class="social-icon"
-            href="https://wa.me/250782021235"
-            target="_blank"
-            aria-label="WhatsApp"
-            ><i class="fa-brands fa-whatsapp"></i>
-            <span class="social-username d-none d-md-inline">WhatsApp</span></a
-          >
-        </div>
-      </div>
-    </footer>
-
-    <!-- ORDER MODAL (same as landing page) -->
+    <!-- ORDER MODAL -->
     <div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded">
@@ -428,10 +307,123 @@
       </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="{% static 'store/script.js' %}?v=13"></script>
-  </body>
-</html>
+    <!-- Page-specific scripts -->
+    <script>
+      // Initialize all Swiper instances for individual cloth images
+      document.addEventListener('DOMContentLoaded', function() {
+        const swipers = document.querySelectorAll('.cloth-item-wrapper .swiper');
+        swipers.forEach((swiperEl) => {
+          new Swiper(swiperEl, {
+            // Core settings
+            slidesPerView: 1,
+            spaceBetween: 0,
+            loop: true,
+            // Improved autoplay
+            autoplay: {
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true
+            },
+            // Enable lazy loading
+            lazy: {
+              loadPrevNext: true,
+              loadPrevNextAmount: 1,
+              loadOnTransitionStart: true
+            },
+            // Smooth fade effect
+            effect: 'fade',
+            fadeEffect: {
+              crossFade: true
+            },
+            // Touch interaction
+            touchRatio: 1,
+            touchAngle: 45,
+            grabCursor: true,
+            // Pagination dots
+            pagination: {
+              el: swiperEl.querySelector('.swiper-pagination'),
+              clickable: true,
+              dynamicBullets: true,
+              dynamicMainBullets: 3
+            },
+            // Navigation arrows
+            navigation: {
+              nextEl: swiperEl.querySelector('.swiper-button-next'),
+              prevEl: swiperEl.querySelector('.swiper-button-prev')
+            },
+            // Keyboard control
+            keyboard: {
+              enabled: true,
+              onlyInViewport: true
+            },
+            // Performance optimizations
+            observer: true,
+            observeParents: true,
+            watchOverflow: true,
+            resizeObserver: true,
+            // A11y
+            a11y: {
+              prevSlideMessage: 'Previous image',
+              nextSlideMessage: 'Next image',
+              firstSlideMessage: 'This is the first image',
+              lastSlideMessage: 'This is the last image',
+              paginationBulletMessage: 'Go to image {{index}}'
+            }
+          });
+        });
+
+        // Like button functionality
+        const likeButtons = document.querySelectorAll('.like-btn');
+        likeButtons.forEach(btn => {
+          btn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const clothId = this.dataset.id;
+            const likesCountEl = this.querySelector('.likes-count');
+            
+            try {
+              const response = await fetch(`/like-cloth/${clothId}/`, {
+                method: 'POST',
+                headers: {
+                  'X-CSRFToken': document.querySelector('[name=csrf-token]').content,
+                  'Content-Type': 'application/json'
+                }
+              });
+              
+              if (response.ok) {
+                const data = await response.json();
+                likesCountEl.textContent = data.likes;
+                this.classList.add('liked');
+                
+                setTimeout(() => {
+                  this.classList.remove('liked');
+                }, 300);
+              }
+            } catch (error) {
+              console.error('Error liking cloth:', error);
+            }
+          });
+        });
+
+        // Order modal functionality
+        const orderButtons = document.querySelectorAll('.order-btn');
+        const whatsappBtn = document.getElementById('wh-btn-2');
+        const orderSummary = document.getElementById('orderSummary');
+
+        orderButtons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            const itemName = this.dataset.itemName;
+            const itemStatus = this.dataset.itemStatus;
+            const itemCategory = this.dataset.itemCategory;
+            
+            const message = `Hello! I'm interested in ordering:\n\nItem: ${itemName}\nCategory: ${itemCategory}\nStatus: ${itemStatus}\n\nPlease provide more details about availability and pricing.`;
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/250782021235?text=${encodedMessage}`;
+            
+            whatsappBtn.href = whatsappUrl;
+            orderSummary.textContent = `Item: ${itemName}\nCategory: ${itemCategory}\nStatus: ${itemStatus}`;
+          });
+        });
+      });
+    </script>
+
+{% endblock %}
