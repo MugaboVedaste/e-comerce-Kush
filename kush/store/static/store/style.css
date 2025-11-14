@@ -16,8 +16,11 @@ body{
   margin:0;
   background:var(--white);
   color:var(--black);
+  overflow-x: hidden;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
+
+
   /* Fixed background image for entire body */
   background-image: url('images/hero-bg.jpg');
   background-size: cover;
