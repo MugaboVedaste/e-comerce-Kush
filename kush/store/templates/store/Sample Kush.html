@@ -7,8 +7,16 @@
 
     <!-- Favicon -->
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'store/images/Logo.png' %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static 'store/images/Logo.png' %}" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'store/images/Logo.png' %}"
+    />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="{% static 'store/images/Logo.png' %}"
+    />
     <link rel="apple-touch-icon" href="{% static 'store/images/Logo.png' %}" />
 
     <!-- Bootstrap CSS -->
@@ -31,7 +39,7 @@
 
     <!-- Main stylesheet (from static) -->
     {% load static %}
-        <!-- Main stylesheet (from static) -->
+    <!-- Main stylesheet (from static) -->
     <link rel="stylesheet" href="{% static 'store/style.css' %}?v=19" />
 
     <!-- CSRF token for AJAX requests -->
@@ -106,7 +114,11 @@
         </div>
 
         <!-- Hamburger Menu Button (Mobile) -->
-        <button class="hamburger-menu" id="hamburgerMenu" aria-label="Toggle menu">
+        <button
+          class="hamburger-menu"
+          id="hamburgerMenu"
+          aria-label="Toggle menu"
+        >
           <span></span>
           <span></span>
           <span></span>
@@ -258,50 +270,46 @@
                       <!-- Individual cloth swiper -->
                       <div class="swiper">
                         <div class="swiper-wrapper">
-                          {% if cloth.image_front or cloth.image_left or cloth.image_right %}
-                            {% if cloth.image_front %}
-                            <div class="swiper-slide">
-                              <img
-                                src="{{ cloth.image_front.url }}"
-                                alt="{{ cloth.name }} - front"
-                                class="swiper-lazy"
-                                loading="lazy"
-                              />
-                              <div class="swiper-lazy-preloader"></div>
-                            </div>
-                            {% endif %}
-                            
-                            {% if cloth.image_left %}
-                            <div class="swiper-slide">
-                              <img
-                                src="{{ cloth.image_left.url }}"
-                                alt="{{ cloth.name }} - left"
-                                class="swiper-lazy"
-                                loading="lazy"
-                              />
-                              <div class="swiper-lazy-preloader"></div>
-                            </div>
-                            {% endif %}
-                            
-                            {% if cloth.image_right %}
-                            <div class="swiper-slide">
-                              <img
-                                src="{{ cloth.image_right.url }}"
-                                alt="{{ cloth.name }} - right"
-                                class="swiper-lazy"
-                                loading="lazy"
-                              />
-                              <div class="swiper-lazy-preloader"></div>
-                            </div>
-                            {% endif %}
-                          {% else %}
-                            <div class="swiper-slide">
-                              <img
-                                src="{% static 'store/images/Logo.png' %}"
-                                alt="No image available"
-                                loading="lazy"
-                              />
-                            </div>
+                          {% if cloth.image_front %}
+                          <div class="swiper-slide">
+                            <img
+                              src="{{ cloth.image_front.url }}"
+                              alt="{{ cloth.name }} - front"
+                              class="swiper-lazy"
+                              loading="lazy"
+                            />
+                            <div class="swiper-lazy-preloader"></div>
+                          </div>
+                          {% endif %} {% if cloth.image_left %}
+                          <div class="swiper-slide">
+                            <img
+                              src="{{ cloth.image_left.url }}"
+                              alt="{{ cloth.name }} - left"
+                              class="swiper-lazy"
+                              loading="lazy"
+                            />
+                            <div class="swiper-lazy-preloader"></div>
+                          </div>
+                          {% endif %} {% if cloth.image_right %}
+                          <div class="swiper-slide">
+                            <img
+                              src="{{ cloth.image_right.url }}"
+                              alt="{{ cloth.name }} - right"
+                              class="swiper-lazy"
+                              loading="lazy"
+                            />
+                            <div class="swiper-lazy-preloader"></div>
+                          </div>
+                          {% endif %}
+                          
+                          {% if not cloth.image_front and not cloth.image_left and not cloth.image_right %}
+                          <div class="swiper-slide">
+                            <img
+                              src="{% static 'store/images/Logo.png' %}"
+                              alt="No image available"
+                              loading="lazy"
+                            />
+                          </div>
                           {% endif %}
                         </div>
                         <div class="swiper-pagination"></div>
@@ -358,7 +366,6 @@
           </div>
 
           <!-- Reviews dashboard under collections -->
-          
         </div>
       </section>
 
@@ -432,44 +439,40 @@
             <div class="col-md-6">
               <div class="contact-card p-4 rounded bg-white">
                 <h4>Send us a message</h4>
-                <form id="contactForm" novalidate>
-                  <div class="mb-2">
-                    <input
-                      class="form-control"
-                      type="text"
-                      id="cname"
-                      placeholder="Your name"
-                      required
-                    />
-                  </div>
-                  <div class="mb-2">
-                    <input
-                      class="form-control"
-                      type="email"
-                      id="cemail"
-                      placeholder="Your email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-2">
-                    <input
-                      class="form-control"
-                      type="tel"
-                      id="cphone"
-                      placeholder="Phone number (e.g. +25078...)"
-                      required
-                    />
-                  </div>
-                  <div class="mb-2">
-                    <textarea
-                      class="form-control"
-                      id="cmessage"
-                      rows="5"
-                      placeholder="How can we help?"
-                      required
-                    ></textarea>
-                  </div>
-                  <div class="d-flex gap-2">
+                <form
+                  id="contactForm"
+                  action="{% url 'send_message' %}"
+                  method="POST"
+                >
+                  {% csrf_token %}
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="name"
+                    placeholder="Your name"
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="email"
+                    name="email"
+                    placeholder="Your email"
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone number (e.g. +25078...)"
+                  />
+                  <textarea
+                    class="form-control"
+                    name="message"
+                    rows="5"
+                    placeholder="How can we help?"
+                    required
+                  ></textarea>
+                  <div class="d-flex gap-2 mt-2">
                     <button type="submit" class="btn btn-primary">
                       Send message
                     </button>
@@ -478,6 +481,7 @@
                     </button>
                   </div>
                 </form>
+                <script src="{% static 'js/script.js' %}?v=15"></script>
               </div>
             </div>
           </div>
@@ -547,7 +551,9 @@
           <div class="col-md-3">
             <h5 class="mb-2">Rate Us</h5>
             <div class="average-rating-inline">
-              <span class="rating-number">{{ average_rating|default:"0.0" }}</span>
+              <span class="rating-number"
+                >{{ average_rating|default:"0.0" }}</span
+              >
               <span class="rating-stars">
                 {% if average_rating >= 0.5 %}⭐{% endif %}
                 {% if average_rating >= 1.5 %}⭐{% endif %}
@@ -556,8 +562,10 @@
                 {% if average_rating >= 4.5 %}⭐{% endif %}
               </span>
             </div>
-            <p class="rating-count-inline">({{ total_ratings|default:"0" }} ratings)</p>
-            
+            <p class="rating-count-inline">
+              ({{ total_ratings|default:"0" }} ratings)
+            </p>
+
             <!-- Star Rating Input -->
             <div class="star-rating-input" id="starRating">
               <span class="star" data-rating="1">⭐</span>
@@ -578,13 +586,33 @@
               {% csrf_token %}
               <div class="row g-2">
                 <div class="col-md-3">
-                  <input type="text" id="reviewerName" name="name" required placeholder="Your name *" class="form-control form-control-sm" />
+                  <input
+                    type="text"
+                    id="reviewerName"
+                    name="name"
+                    required
+                    placeholder="Your name *"
+                    class="form-control form-control-sm"
+                  />
                 </div>
                 <div class="col-md-3">
-                  <input type="text" id="reviewerContact" name="contact" placeholder="Email/phone (optional)" class="form-control form-control-sm" />
+                  <input
+                    type="text"
+                    id="reviewerContact"
+                    name="contact"
+                    placeholder="Email/phone (optional)"
+                    class="form-control form-control-sm"
+                  />
                 </div>
                 <div class="col-md-4">
-                  <input type="text" id="reviewText" name="review_text" required placeholder="Share your experience..." class="form-control form-control-sm" />
+                  <input
+                    type="text"
+                    id="reviewText"
+                    name="review_text"
+                    required
+                    placeholder="Share your experience..."
+                    class="form-control form-control-sm"
+                  />
                 </div>
                 <div class="col-md-2">
                   <button type="submit" class="submit-btn-inline w-100">
@@ -594,7 +622,8 @@
               </div>
             </form>
             <div class="thank-you-message mt-2" id="reviewThankYouMessage">
-              <i class="fa-solid fa-check-circle"></i> <span id="reviewThankYouText"></span>
+              <i class="fa-solid fa-check-circle"></i>
+              <span id="reviewThankYouText"></span>
             </div>
           </div>
         </div>
@@ -602,16 +631,19 @@
         <!-- Bottom: Recent Reviews (Small Space Below) -->
         <div class="recent-reviews-inline mt-3">
           {% if recent_reviews %}
-            <h6 class="mb-2">Recent Feedback</h6>
-            <div class="reviews-scroll">
-              {% for review in recent_reviews|slice:":5" %}
-              <span class="review-pill">
-                <strong>{{ review.name }}:</strong> {{ review.review_text|truncatewords:8 }}
-              </span>
-              {% endfor %}
-            </div>
+          <h6 class="mb-2">Recent Feedback</h6>
+          <div class="reviews-scroll">
+            {% for review in recent_reviews|slice:":5" %}
+            <span class="review-pill">
+              <strong>{{ review.name }}:</strong> {{
+              review.review_text|truncatewords:8 }}
+            </span>
+            {% endfor %}
+          </div>
           {% else %}
-            <p class="text-muted mb-0"><small>No reviews yet. Be the first!</small></p>
+          <p class="text-muted mb-0">
+            <small>No reviews yet. Be the first!</small>
+          </p>
           {% endif %}
         </div>
       </div>
@@ -645,11 +677,11 @@
           >
           <a
             href="https://www.tiktok.com/@officiallykush2025?is_from_webapp=1&sender_device=pc"
-              class="social-icon"
-              target="_blank"
-              aria-label="TikTok"
-            >
-              <i class="fa-brands fa-tiktok"></i>
+            class="social-icon"
+            target="_blank"
+            aria-label="TikTok"
+          >
+            <i class="fa-brands fa-tiktok"></i>
             <span class="social-username d-none d-md-inline">TikTok</span></a
           >
           <a
@@ -713,105 +745,112 @@
     <!-- Rating & Review JavaScript -->
     <script>
       // ===== STAR RATING FUNCTIONALITY =====
-      const stars = document.querySelectorAll('.star-rating-input .star');
-      const thankYouMessage = document.getElementById('thankYouMessage');
+      const stars = document.querySelectorAll(".star-rating-input .star");
+      const thankYouMessage = document.getElementById("thankYouMessage");
 
       // Star hover effect
       stars.forEach((star, index) => {
-        star.addEventListener('mouseenter', () => {
+        star.addEventListener("mouseenter", () => {
           stars.forEach((s, i) => {
             if (i <= index) {
-              s.classList.add('active');
+              s.classList.add("active");
             } else {
-              s.classList.remove('active');
+              s.classList.remove("active");
             }
           });
         });
 
         // Star click to submit rating
-        star.addEventListener('click', () => {
-          const rating = star.getAttribute('data-rating');
+        star.addEventListener("click", () => {
+          const rating = star.getAttribute("data-rating");
           submitRating(rating);
         });
       });
 
       // Reset stars on mouse leave
-      document.getElementById('starRating').addEventListener('mouseleave', () => {
-        stars.forEach(s => s.classList.remove('active'));
-      });
+      document
+        .getElementById("starRating")
+        .addEventListener("mouseleave", () => {
+          stars.forEach((s) => s.classList.remove("active"));
+        });
 
       // Submit rating via AJAX
       function submitRating(rating) {
         fetch('{% url "submit_rating" %}', {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: `rating=${rating}`
+          body: `rating=${rating}`,
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Show thank you message
-            thankYouMessage.classList.add('show');
-            
-            // Update average rating display
-            if (data.average_rating) {
-              document.querySelector('.rating-number').textContent = data.average_rating;
-              document.querySelector('.rating-count').textContent = `(${data.total_ratings} ratings)`;
-            }
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Show thank you message
+              thankYouMessage.classList.add("show");
 
-            // Hide message after 3 seconds
-            setTimeout(() => {
-              thankYouMessage.classList.remove('show');
-            }, 3000);
-          } else {
-            alert('Error: ' + (data.error || 'Could not submit rating'));
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed to submit rating. Please try again.');
-        });
+              // Update average rating display
+              if (data.average_rating) {
+                document.querySelector(".rating-number").textContent =
+                  data.average_rating;
+                document.querySelector(
+                  ".rating-count"
+                ).textContent = `(${data.total_ratings} ratings)`;
+              }
+
+              // Hide message after 3 seconds
+              setTimeout(() => {
+                thankYouMessage.classList.remove("show");
+              }, 3000);
+            } else {
+              alert("Error: " + (data.error || "Could not submit rating"));
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Failed to submit rating. Please try again.");
+          });
       }
 
       // ===== REVIEW FORM SUBMISSION (NO MODAL) =====
-      const reviewForm = document.getElementById('reviewForm');
-      const reviewThankYouMessage = document.getElementById('reviewThankYouMessage');
-      const reviewThankYouText = document.getElementById('reviewThankYouText');
+      const reviewForm = document.getElementById("reviewForm");
+      const reviewThankYouMessage = document.getElementById(
+        "reviewThankYouMessage"
+      );
+      const reviewThankYouText = document.getElementById("reviewThankYouText");
 
       // Submit review form
-      reviewForm.addEventListener('submit', (e) => {
+      reviewForm.addEventListener("submit", (e) => {
         e.preventDefault();
 
         const formData = new FormData(reviewForm);
 
         fetch('{% url "submit_review" %}', {
-          method: 'POST',
-          body: formData
+          method: "POST",
+          body: formData,
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Show thank you message
-            reviewThankYouText.textContent = data.message;
-            reviewThankYouMessage.classList.add('show');
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Show thank you message
+              reviewThankYouText.textContent = data.message;
+              reviewThankYouMessage.classList.add("show");
 
-            // Reset form
-            reviewForm.reset();
+              // Reset form
+              reviewForm.reset();
 
-            // Reload after 2 seconds to show new review
-            setTimeout(() => {
-              location.reload();
-            }, 2000);
-          } else {
-            alert('Error: ' + (data.error || 'Could not submit review'));
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed to submit review. Please try again.');
-        });
+              // Reload after 2 seconds to show new review
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+            } else {
+              alert("Error: " + (data.error || "Could not submit review"));
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Failed to submit review. Please try again.");
+          });
       });
     </script>
   </body>

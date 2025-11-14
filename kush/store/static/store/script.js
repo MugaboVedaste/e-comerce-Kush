@@ -307,26 +307,72 @@ document.addEventListener('click', function (e) {
 });
 
 // --------------------------
-// Contact form (mail fallback) includes phone
+// Contact form (email submission)
 // --------------------------
-const contactForm = document.getElementById('contactForm');
-if(contactForm){
-  contactForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    const name = document.getElementById('cname').value.trim();
-    const email = document.getElementById('cemail').value.trim();
-    const phone = document.getElementById('cphone').value.trim();
-    const msg = document.getElementById('cmessage').value.trim();
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("contactForm");
+  if (!form) {
+    console.log("Contact form not found");
+    return;
+  }
 
-    if(!name || !email || !phone || !msg){
-      alert('Please complete all fields including phone number.');
-      return;
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    
+    // Disable button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Sending...';
+
+    // Get form data
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message
+        alert('✅ ' + data.message);
+        form.reset();
+      } else {
+        // Show error message
+        alert('❌ ' + (data.error || 'Failed to send message. Please try again.'));
+      }
+    } catch (err) {
+      console.error("Error sending message:", err);
+      alert('❌ Network error. Please check your connection and try again.');
+    } finally {
+      // Re-enable button
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
     }
-    const subject = encodeURIComponent('Website message from ' + name);
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n${msg}`);
-    window.location.href = `mailto:hello@kushstore.example?subject=${subject}&body=${body}`;
   });
-}
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
 
 // --------------------------
 // Search quick behavior: filters collection cards by text in title or model

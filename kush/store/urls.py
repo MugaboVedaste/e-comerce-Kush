@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
+from .views import send_message
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
     path('about/', views.about, name='about'),
-    
+    path('send-contact/', views.send_message, name='send_message'),
     # Category detail page
     path('category/<slug:slug>/', views.category_detail, name='category_detail'),
 

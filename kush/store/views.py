@@ -10,6 +10,10 @@ from .models import Cloth, SiteRating, SiteReview
 from .forms import ClothForm, SiteRatingForm, SiteReviewForm
 from .models import Category
 from django.db.models import Avg
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import JsonResponse
+import json
 
 
 # ----- Manager Login -----
@@ -251,3 +255,63 @@ def submit_review(request):
             
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+@csrf_exempt  # for testing; later, remove and use proper CSRF handling
+@require_POST
+def send_message(request):
+    """Handle contact form submission and send email"""
+    if request.method == 'POST':
+        try:
+            # Get form data
+            name = request.POST.get('name', '').strip()
+            email = request.POST.get('email', '').strip()
+            phone = request.POST.get('phone', '').strip()
+            message = request.POST.get('message', '').strip()
+            
+            # Validate required fields
+            if not name or not email or not message:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Name, email, and message are required.'
+                }, status=400)
+            
+            # Compose email
+            subject = f'Contact Form Message from {name}'
+            email_message = f"""
+New Contact Form Submission
+
+From: {name}
+Email: {email}
+Phone: {phone if phone else 'Not provided'}
+
+Message:
+{message}
+
+---
+Sent from Kush Women's Fashion Store website
+            """
+            
+            # Send email
+            send_mail(
+                subject=subject,
+                message=email_message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[settings.EMAIL_HOST_USER],  # Send to yourself
+                fail_silently=False,
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Thank you! Your message has been sent successfully.'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Failed to send message: {str(e)}'
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid request method'
+    }, status=405)

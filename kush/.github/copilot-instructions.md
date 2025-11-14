@@ -1,78 +1,167 @@
-## Project snapshot
+# Kush Women's Fashion Store - AI Coding Guide
 
-- Framework: Django 5.2.x (project created with django-admin startproject).
-- App: `store` (single app included in `INSTALLED_APPS`).
-- DB: SQLite at `db.sqlite3` (local development only).
-- Key files to inspect: `kush/settings.py`, `manage.py`, `store/views.py`, `store/urls.py`, `store/models.py`, `store/templates/store/landing.html`.
+## Project Overview
+Django 5.2.4 e-commerce platform for a women's fashion boutique with staff-managed inventory, WhatsApp ordering, and customer reviews.
 
-## Quick developer workflows (command examples — Windows `cmd.exe`)
+**Stack:** Django 5.2.4, SQLite, Pillow 10.0.1, Swiper.js, Bootstrap 5, AOS animations  
+**Primary App:** `store` (clothing inventory, categories, ratings/reviews)  
+**Production URL:** http://officiallykush.com (72.61.146.74)
 
-- Create and activate a venv:
+## Critical Architecture Patterns
 
-  python -m venv .venv
-  .venv\Scripts\activate
+### Two-Track User System
+1. **Staff/Managers** (`is_staff=True`) - Full CRUD on clothing items via manager dashboard
+2. **Anonymous Customers** - Browse, like items, submit ratings/reviews, order via WhatsApp
 
-- Install dependencies (project has no `requirements.txt`; check with the user or infer from environment):
+**Key Decision:** No customer authentication. Likes and ratings tracked by IP address (`get_client_ip()` helper in `views.py`).
 
-  pip install -r requirements.txt # if provided
+### Image Management Pattern
+Each `Cloth` has 3 ImageFields: `image_front`, `image_left`, `image_right` uploaded to `media/clothes/{position}/`. Templates use Swiper.js carousels with lazy loading for multi-angle product viewing.
 
-- Apply DB migrations and run server:
+**Example from `models.py`:**
+```python
+image_front = models.ImageField(upload_to='clothes/front/', blank=True, null=True)
+image_left = models.ImageField(upload_to='clothes/left/', blank=True, null=True)
+image_right = models.ImageField(upload_to='clothes/right/', blank=True, null=True)
+```
 
-  python manage.py migrate
-  python manage.py runserver 127.0.0.1:8000
+### CSRF-Exempt AJAX Endpoints
+Views for anonymous actions (`like_cloth`, `submit_rating`, `submit_review`, `send_message`) use `@csrf_exempt` for simplicity. Always use `@require_http_methods(["POST"])` alongside.
 
-- Run tests (no tests currently present in `store/tests.py`):
+**Pattern:**
+```python
+@csrf_exempt
+@require_http_methods(["POST"])
+def like_cloth(request, cloth_id):
+    cloth = Cloth.objects.get(id=cloth_id)
+    cloth.likes = (cloth.likes or 0) + 1
+    cloth.save()
+    return JsonResponse({'likes': cloth.likes, 'success': True})
+```
 
-  python manage.py test
+## Essential Developer Workflows
 
-## Architecture & conventions (what to know)
+### Setup (Windows cmd.exe)
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser  # Create staff account
+python manage.py runserver
+```
 
-- This is a single Django project (`kush`) with one app (`store`). The app follows the conventional layout: `models.py`, `views.py`, `urls.py`, and a `templates/store` folder.
-- Views: `store/views.py` currently defines `landing_page(request)` which renders `store/landing.html`. Route configured in `store/urls.py` maps `''` to that view.
-- Templates: Uses CDN-hosted Bootstrap and inline styles in `store/templates/store/landing.html`. Expect front-end work to be mostly static markup and templates.
-- Models: `store/models.py` is currently empty — feature work will likely add models and migrations.
+### Creating Test Data
+```python
+# Django shell (python manage.py shell)
+from store.models import Category, Cloth
+from django.contrib.auth.models import User
 
-## Project-specific patterns & helpful examples
+manager = User.objects.filter(is_staff=True).first()
+cat = Category.objects.create(name="Evening Wear", description="Elegant dresses")
+Cloth.objects.create(name="Black Gown", price=45000, category=cat, manager=manager)
+```
 
-- URL routing: app `store` exposes URLs in `store/urls.py`. The project uses `ROOT_URLCONF = 'kush.urls'` so follow that file when adding new top-level routes.
+### Media File Handling
+- Development: `MEDIA_URL='/media/'` served by Django when `DEBUG=True` (see `kush/urls.py`)
+- Upload path pattern: `upload_to='clothes/{position}/'` creates subdirectories automatically
+- Always use `{% load static %}` and `{{ cloth.image_front.url }}` in templates
 
-- Template discovery: `TEMPLATES` has `'APP_DIRS': True`, so templates in `store/templates/...` will be picked up automatically.
+## Project-Specific Conventions
 
-- Database: local `sqlite3` file at `BASE_DIR / 'db.sqlite3'`. No remote DB or third-party integrations are configured in source.
+### Status Field Pattern
+`Cloth.status` uses choices: `[('available', 'Available'), ('sold', 'Sold')]`. Frontend displays badge with ellipse indicator (see `STATUS_BADGE_ELLIPSE_UPDATE.md`). Never hardcode status strings—use `cloth.get_status_display()`.
 
-## What an AI coding agent should do first
+### URL Naming Convention
+- Manager routes: `manager/dashboard/`, `manager/clothes/add/`
+- Public routes: `category/<slug:slug>/`, root path `''` = landing page
+- AJAX endpoints: `submit-rating/`, `clothes/<int:cloth_id>/like/`
 
-1. Inspect `kush/settings.py` for environment-specific flags (DEBUG, SECRET_KEY, ALLOWED_HOSTS). Don't change SECRET_KEY or DEBUG without explicit instructions.
-2. Run `python manage.py migrate` before making DB-related changes; migrations folder currently has only `__init__.py`.
-3. Use `store/views.py` + `store/templates/store/landing.html` for UI examples. To add new pages, mirror the existing pattern: view -> template -> `store/urls.py` entry.
+### Template Inheritance
+`base.html` contains header, footer, rating system. Child templates (`Sample Kush.html`, `category_detail.html`) extend it. **Critical:** All templates include Swiper initialization script via CDN (`swiper@9`).
 
-## Safety notes / constraints
+### JavaScript Organization
+`store/static/store/script.js` (v14) handles:
+- Swiper initialization (`initializeClothSwipers()`)
+- WhatsApp order modals (data attributes: `data-item-name`, `data-item-category`, `data-item-id`)
+- AJAX likes/ratings with animations
+- Hamburger menu toggle
+- Search filtering (client-side text matching)
+- Dark theme toggle (localStorage: `kush_theme`)
 
-- The repo contains an in-repo SECRET_KEY (development). Do not commit new secrets or move secrets to public files. If asked to add production-ready config, propose using environment variables and a `.env` loader.
-- No external services (APIs, storage, auth) are present; avoid introducing integrations unless requested and documented.
+**Key Pattern:** WhatsApp orders use `api.whatsapp.com` with hardcoded number `250785440056`.
 
-## Where to add tests & examples
+## Data Flow Examples
 
-- Unit tests belong in `store/tests.py` or under `store/tests/`. Add simple view tests that assert the landing page returns 200 and uses correct template.
+### Adding a Cloth Item (Manager)
+1. POST to `/manager/clothes/add/` with `ClothForm`
+2. View auto-assigns `cloth.manager = request.user` before save
+3. Redirect to `cloth_detail` with newly created ID
+4. Images saved to `media/clothes/{front|left|right}/`
 
-## Quick references for contributors (examples to copy)
+### Submitting a Review (Customer)
+1. Click "Leave a Review" → modal opens (JS)
+2. POST to `/submit-review/` with `name`, `contact` (optional), `review_text`
+3. Backend saves with `ip_address = get_client_ip(request)`
+4. JSON response includes review data, frontend displays success & reloads
 
-- Example view & route (already present):
+### Category Filtering
+Categories use auto-slugs (`slugify(name)` in `save()` method). URL `/category/evening-wear/` queries `Category.objects.get(slug='evening-wear')` then displays `category.clothes.all()`.
 
-  # store/views.py
+## Common Tasks Quick Reference
 
-  def landing_page(request):
-  return render(request, 'store/landing.html')
+### Add New Model Field
+```bash
+# After editing models.py
+python manage.py makemigrations
+python manage.py migrate
+# Update admin.py list_display if needed
+```
 
-  # store/urls.py
+### Register Model in Admin
+```python
+# store/admin.py pattern
+@admin.register(MyModel)
+class MyModelAdmin(admin.ModelAdmin):
+    list_display = ('field1', 'field2', 'created_at')
+    search_fields = ('field1',)
+```
 
-  urlpatterns = [ path('', views.landing_page, name='landing'), ]
+### Add AJAX View
+```python
+# store/views.py
+@csrf_exempt
+@require_http_methods(["POST"])
+def my_endpoint(request):
+    # Process request.POST data
+    return JsonResponse({'success': True, 'data': result})
 
-## If you need more context
+# store/urls.py
+path('my-endpoint/', views.my_endpoint, name='my_endpoint'),
+```
 
-- If `requirements.txt` or a deployment setup is missing, ask the repository owner for the preferred Python packages and deployment steps.
-- If you are asked to enable static asset serving or add `collectstatic`, propose and document `STATIC_ROOT` changes and CDN/hosting strategy before applying them.
+## Email Configuration
+SMTP configured for Gmail (`vedasteapp@gmail.com`) using app password. Contact form in `send_message` view uses `send_mail()` from `django.core.mail`. Always include subject, message, `from_email=settings.EMAIL_HOST_USER`.
+
+## Testing & Deployment Notes
+- No unit tests exist yet (`store/tests.py` is empty stub)
+- `runtime.txt` specifies Python version for deployment
+- Multiple `.md` docs track feature implementations (see root directory)
+- Email backend uses Gmail SMTP—verify credentials before deployment
+
+## Safety Constraints
+- **Never commit real SECRET_KEY** (current one is development-only)
+- **ALLOWED_HOSTS** includes production domain—verify before deployment
+- **Media files** not version-controlled (`.gitignore` should exclude `media/`)
+- **Staff access** required for inventory management—verify `is_staff` checks
+
+## Documentation References
+- Rating system: `RATING_REVIEW_SYSTEM_DOCUMENTATION.md`
+- Swiper integration: `SWIPER_SYNC_DOCUMENTATION.md`
+- Mobile responsive: `MOBILE_RESPONSIVE_SUMMARY.md`
+- Template changes: `TEMPLATE_REFACTORING_SUMMARY.md`
 
 ---
 
-If anything here is incomplete or you want me to include additional examples (migrations, admin, or CI commands), tell me which area to expand and I will iterate.
+**Last Updated:** Based on Django 5.2.4 codebase (November 2025)  
+For missing context on specific features, check root `.md` docs or admin panel model configurations.
