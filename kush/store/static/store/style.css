@@ -309,20 +309,63 @@ body{
 
 /* Dark theme */
 [data-theme="dark"]{
-  --black:#e6eef8;
+  --black:#ffffff;
   --white:#0b1220;
   --muted:rgba(255,255,255,0.06);
   --accent:#7ec0ff;
 }
 [data-theme="dark"] body{
-  color:var(--black);
+  color:#ffffff;
   /* Keep the fixed background image, add dark overlay */
   background-image: linear-gradient(rgba(7, 17, 34, 0.85), rgba(7, 17, 34, 0.85)), url('images/hero-bg.jpg');
 }
 [data-theme="dark"] .section{background: rgba(7, 20, 40, 0.92);}
 [data-theme="dark"] .bg-light{background: rgba(11, 18, 32, 0.90) !important;}
 [data-theme="dark"] .site-footer{background: rgba(2, 6, 10, 0.95);}
-[data-theme="dark"] .card-cat{background: rgba(7, 20, 40, 0.95); color:var(--black); backdrop-filter: blur(10px);}
+[data-theme="dark"] .card-cat{background: rgba(7, 20, 40, 0.95); color:#ffffff; backdrop-filter: blur(10px);}
+
+/* Dark mode: Force white text for ALL content */
+[data-theme="dark"] .main-nav a,
+[data-theme="dark"] .nav-link {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .brand-title,
+[data-theme="dark"] .brand-sub {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] strong,
+[data-theme="dark"] div {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+[data-theme="dark"] .collection-title,
+[data-theme="dark"] .card-cat h3,
+[data-theme="dark"] .card-cat p,
+[data-theme="dark"] .card-cat strong,
+[data-theme="dark"] .card-cat .text-muted {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .cloth-item-wrapper strong,
+[data-theme="dark"] .cloth-item-wrapper .text-muted,
+[data-theme="dark"] .p-2 strong,
+[data-theme="dark"] .p-2 .text-muted {
+  color: #ffffff !important;
+}
 
 .collection-card {
   width: 100%;
