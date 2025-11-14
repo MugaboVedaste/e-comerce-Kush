@@ -43,9 +43,10 @@
 
       @media (max-width: 480px) {
         .clothes-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr !important;
           gap: 20px;
-          padding: 20px 0;
+          padding: 20px 10px !important;
+          width: 100%;
         }
 
         .category-hero {
@@ -56,9 +57,76 @@
           font-size: 1.75rem;
         }
 
-        .model-card img {
-          min-height: 300px;
-          max-height: 400px;
+        /* Fix cloth visibility on small screens */
+        .cloth-item-wrapper {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin: 0 auto;
+          display: block !important;
+          overflow: visible !important;
+        }
+
+        .model-card {
+          width: 100% !important;
+          height: auto !important;
+          position: relative !important;
+          overflow: hidden !important;
+        }
+
+        .model-card img,
+        .cloth-item-wrapper .swiper-slide img {
+          min-height: auto !important;
+          max-height: none !important;
+          height: auto !important;
+          width: 100% !important;
+          object-fit: contain !important;
+          display: block !important;
+        }
+
+        .cloth-item-wrapper .swiper {
+          width: 100% !important;
+          height: auto !important;
+          display: block !important;
+        }
+
+        .cloth-item-wrapper .swiper-wrapper {
+          display: flex !important;
+        }
+
+        .cloth-item-wrapper .swiper-slide {
+          width: 100% !important;
+          height: auto !important;
+          flex-shrink: 0 !important;
+        }
+
+        .cloth-overlay {
+          position: absolute !important;
+          display: flex !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+        }
+
+        .status-badge {
+          font-size: 10px !important;
+          padding: 4px 10px !important;
+          position: relative !important;
+        }
+
+        .p-2 {
+          display: block !important;
+          width: 100% !important;
+          padding: 12px !important;
+        }
+
+        .section {
+          padding: 30px 10px !important;
+        }
+
+        .container {
+          padding-left: 10px !important;
+          padding-right: 10px !important;
         }
 
         .nav-wrap {
@@ -129,6 +197,31 @@
         opacity: 1;
         width: 10px;
         height: 10px;
+      }
+
+      /* Dark mode fixes for cloth items */
+      [data-theme="dark"] .cloth-item-wrapper {
+        background: rgba(7, 20, 40, 0.95);
+        border-radius: 8px;
+      }
+
+      [data-theme="dark"] .cloth-item-wrapper .p-2 {
+        background: rgba(11, 18, 32, 0.95);
+        color: #ffffff !important;
+      }
+
+      [data-theme="dark"] .cloth-item-wrapper strong,
+      [data-theme="dark"] .cloth-item-wrapper .text-muted,
+      [data-theme="dark"] .cloth-item-wrapper .small {
+        color: #ffffff !important;
+      }
+
+      [data-theme="dark"] .model-card {
+        background: rgba(7, 20, 40, 0.90);
+      }
+
+      [data-theme="dark"] .swiper-slide {
+        background: rgba(11, 18, 32, 0.95) !important;
       }
 </style>
 
