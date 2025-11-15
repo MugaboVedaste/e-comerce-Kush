@@ -383,6 +383,10 @@ body{
   border-color: #ffffff !important;
 }
 
+[data-theme="dark"] .like-btn .likes-count {
+  color: #ffffff !important;
+}
+
 .collection-card {
   width: 100%;
   display: block;
