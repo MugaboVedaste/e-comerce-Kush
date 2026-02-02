@@ -383,6 +383,16 @@ body{
   border-color: #ffffff !important;
 }
 
+[data-theme="dark"] .like-btn {
+  background: rgba(11, 18, 32, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="dark"] .like-btn:hover {
+  background: rgba(11, 18, 32, 1) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25) !important;
+}
+
 [data-theme="dark"] .like-btn .likes-count {
   color: #ffffff !important;
 }
